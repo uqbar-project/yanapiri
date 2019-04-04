@@ -1,0 +1,32 @@
+#!/bin/bash
+
+function renameWollokProject {
+  echo "Fixing "$REPO_HOME
+
+
+  if test -d "$TMPDIR"; then
+    :
+  elif test -d "$TMP"; then
+      TMPDIR=$TMP
+  elif test -d /var/tmp; then
+      TMPDIR=/var/tmp
+  else
+      TMPDIR=/tmp
+  fi
+
+  echo $1
+  echo $2
+  cd $1
+  ORIGINAL_PY_NAME=$(sed -ne '/name/{s/.*<name>\(.*\)<\/name>.*/\1/p;q;}' .project)
+  if grep -q "$1" .project; then
+    echo "Project Name is already fixed"
+  else
+    echo $ORIGINAL_PY_NAME
+    sed "s/$ORIGINAL_PY_NAME/$1/g" .project > .project.tmp
+    mv .project.tmp .project
+    git commit -a -m "Fixing project name"
+    echo "Project Name is fixed"
+  fi
+
+  cd ..
+}
