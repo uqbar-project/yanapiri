@@ -15,3 +15,5 @@ foreach_repo do
   `git pull base master`
   `git push origin master`
 end
+
+`rm -rf #{$base_repo}`
