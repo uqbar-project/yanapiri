@@ -1,17 +1,11 @@
+#!/usr/bin/env ruby
+
+require_relative './lib/foreach_repo'
+
+raise "Necesito como parámetro el slug del repositorio base (ejemplo: wollok/multipepita)." unless ARGV[0]
+
 $base_slug = ARGV[0]
 $base_repo = $base_slug.split('/').last
-$working_dir = Dir.pwd
-
-def foreach_repo
-  repos = Dir.glob('*').select {|f| File.directory? f}
-
-  for repo in repos
-    puts "Trabajando con #{repo}..."
-    Dir.chdir "#{$working_dir}/#{repo}"
-    yield repo
-    puts ""
-  end
-end
 
 `git clone git@github.com:#{$base_slug}.git`
 
