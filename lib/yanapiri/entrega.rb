@@ -1,4 +1,6 @@
 class Entrega
+  attr_reader :fecha_limite
+
   def initialize(base_path, id, fecha_limite = Time.now)
     @base_path = base_path
     @id = id
@@ -13,7 +15,7 @@ class Entrega
   end
 
   def crear_pull_request!(gh_client, orga)
-    gh_client.create_pull_request("#{orga}/#{@id}", "base", "entrega", "Corrección") rescue nil
+    gh_client.create_pull_request("#{orga}/#{@id}", "base", "entrega", "Corrección", mensaje_pull_request) rescue nil
   end
 
   def publicar_cambios!
@@ -34,7 +36,19 @@ class Entrega
     @repo.log.first.author_date
   end
 
+  def mensaje_pull_request
+    if fuera_de_termino?
+      "**Ojo:** tu último commit fue el #{formato_humano fecha}, pero la fecha límite era el #{formato_humano fecha_limite}.\n\n¡Tenés que respetar la fecha de entrega establecida! :point_up:"
+    else
+      ''
+    end
+  end
+
   private
+
+  def formato_humano(fecha)
+    fecha.strftime("%d/%m/%Y a las %H:%M")
+  end
 
   def proyecto_wollok
     '.project'
