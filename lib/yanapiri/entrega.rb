@@ -1,7 +1,8 @@
 class Entrega
-  def initialize(base_path, id)
+  def initialize(base_path, id, fecha_limite = Time.now)
     @base_path = base_path
     @id = id
+    @fecha_limite = fecha_limite
     @repo = Git.open "#{@base_path}/#{@id}"
   end
 
@@ -17,6 +18,20 @@ class Entrega
 
   def publicar_cambios!
     @repo.push 'origin', '--all'
+  end
+
+  def fuera_de_termino?
+    @repo.checkout 'master'
+    @repo.log.since(@fecha_limite.iso8601).any?
+  end
+
+  def autor
+    @id.split('-').last
+  end
+
+  def fecha
+    @repo.checkout 'master'
+    @repo.log.first.author_date
   end
 
   private
