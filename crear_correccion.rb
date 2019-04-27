@@ -1,7 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'octokit'
-require_relative './lib/foreach_repo'
+require_relative './lib/yanapiri'
 
 $base_commit = ARGV[0] or raise "Necesito como parámetro el SHA del commit base (ejemplo: b7b83cd0aa3b702)."
 $gh_token = ENV['GITHUB_TOKEN'] or raise "Token de GitHub no encontrado, asegurate de que está guardado en la variable de entorno $GITHUB_TOKEN. Si no tenés un token, podés generarlo en https://github.com/settings/tokens, con al menos scope 'repo'."

@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative './lib/foreach_repo'
+require_relative './lib/yanapiri'
 
 raise "Necesito como parámetro el slug del repositorio base (ejemplo: wollok/multipepita)." unless ARGV[0]
 
