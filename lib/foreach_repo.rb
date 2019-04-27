@@ -6,8 +6,8 @@ def foreach_repo(log_enabled = true)
   for repo in repos
     print_log log_enabled, "Trabajando con #{repo}..."
     Dir.chdir "#{$working_dir}/#{repo}"
-    yield repo
-    print_log log_enabled, ""
+    yield repo, $working_dir
+    print_log log_enabled, "==============================\n"
   end
 
   Dir.chdir $working_dir
