@@ -15,4 +15,8 @@ class Bot
       end
     end
   end
+
+  def crear_pull_request!(id, mensaje)
+    @gh_client.create_pull_request("#{@organization}/#{id}", "base", "entrega", "Corrección", mensaje) rescue nil
+  end
 end

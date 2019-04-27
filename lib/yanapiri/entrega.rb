@@ -14,8 +14,8 @@ class Entrega
     renombrar_proyecto_wollok!
   end
 
-  def crear_pull_request!(gh_client, orga)
-    gh_client.create_pull_request("#{orga}/#{@id}", "base", "entrega", "Corrección", mensaje_pull_request) rescue nil
+  def crear_pull_request!(bot)
+    bot.crear_pull_request!(@id, mensaje_pull_request)
   end
 
   def publicar_cambios!
