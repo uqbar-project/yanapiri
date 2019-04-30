@@ -28,9 +28,14 @@ module Yanapiri
   end
 
   class CLI < Thor
-    desc "whoami", "Organización y usuario con el que se está trabajando"
+    desc 'whoami', 'Organización y usuario con el que se está trabajando'
     def whoami
       puts "Estoy trabajando en la organización #{$bot.organization}, commiteando con el usuario #{GitUser.full_name}."
+    end
+
+    desc 'clonar [ENTREGA]', 'Clona todos los repositorios de la entrega dentro de una subcarpeta'
+    def clonar(nombre)
+      $bot.clonar_entrega!(nombre)
     end
   end
 end
