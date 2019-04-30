@@ -1,4 +1,3 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gem 'octokit', '~> 4.0'
-gem 'git', '~> 1.5'
+gemspec

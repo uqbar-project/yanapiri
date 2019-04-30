@@ -1,4 +1,6 @@
 class Bot
+  attr_reader :organization
+  
   def initialize(organization, gh_token)
     @organization = organization
     @gh_client = Octokit::Client.new(access_token: gh_token)
