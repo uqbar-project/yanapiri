@@ -44,6 +44,10 @@ class Entrega
     end
   end
 
+  def mensaje_ultimo_commit
+    "#{autor} hizo su último commit el #{fecha}." + (fuera_de_termino? ? " Fuera de término." : "")
+  end
+
   private
 
   def formato_humano(fecha)
