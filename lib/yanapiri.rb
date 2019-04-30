@@ -44,8 +44,7 @@ module Yanapiri
     option :commit_base, {required: true, aliases: :b}
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
     def corregir(nombre)
-      foreach_repo(nombre) do |repo, base_path|
-        entrega = Entrega.new base_path, repo, Time.parse(options.fecha_limite)
+      foreach_entrega(nombre) do |entrega|
         entrega.preparar_correccion! options.commit_base
         entrega.publicar_cambios!
         entrega.crear_pull_request! $bot
@@ -56,8 +55,7 @@ module Yanapiri
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
     option :solo_excedidos, {type: :boolean}
     def ultimo_commit(nombre)
-      foreach_repo(nombre) do |repo, base_path|
-        entrega = Entrega.new base_path, repo, Time.parse(options.fecha_limite)
+      foreach_entrega(nombre) do |entrega|
         if not options.solo_excedidos or entrega.fuera_de_termino?
           say entrega.mensaje_ultimo_commit, entrega.fuera_de_termino? ? :red : :clear
         end
@@ -77,6 +75,12 @@ module Yanapiri
             end
             log "==============================\n"
           end
+        end
+      end
+
+      def foreach_entrega(nombre)
+        foreach_repo(nombre) do |repo, base_path|
+          yield Entrega.new base_path, repo, Time.parse(options.fecha_limite)
         end
       end
 
