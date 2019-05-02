@@ -22,16 +22,19 @@ module Yanapiri
 
     desc 'setup', 'Configura a Yanapiri para el primer uso'
     def setup
-      say '¡Kamisaraki! Yo soy Yanapiri, tu ayudante, y necesito algunos datos antes de empezar:'
+      say '¡Kamisaraki! Yo soy Yanapiri, tu ayudante, y necesito algunos datos antes de empezar:', :bold
 
       config = OpenStruct.new
       config.github_token = ask 'Token de GitHub (lo necesito para armar los pull requests):'
       config.orga = ask 'Organización por defecto:'
 
-      bot = Bot.new(config.orga, config.github_token)
-      say "Genial. Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses."
-
-      dump_config! config.to_h
+      begin
+        bot = Bot.new(config.orga, config.github_token)
+        say "Yuspagara. Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses.", :green
+        dump_config! config.to_h
+      rescue Octokit::Unauthorized
+        raise Thor::Error, set_color('El access token de GitHub no es correcto, revisalo por favor.', :red)
+      end
     end
 
     desc 'whoami', 'Organización y usuario con el que se está trabajando'
