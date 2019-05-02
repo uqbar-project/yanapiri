@@ -1,3 +1,6 @@
+[![Gem Version](https://badge.fury.io/rb/yanapiri.svg)](https://rubygems.org/gems/yanapiri)
+[![Build Status](https://travis-ci.org/faloi/yanapiri.svg?branch=master)](https://travis-ci.org/faloi/yanapiri)
+
 # Yanapiri
 
 Yanapiri es un vocablo aymara que significa "ayudante" o "el que ayuda". 
