@@ -167,5 +167,3 @@ module Yanapiri
     end
   end
 end
-
-Yanapiri::CLI.start(ARGV)
