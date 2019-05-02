@@ -26,6 +26,18 @@ class Bot
     crear_pull_request! entrega
   end
 
+  def nombre
+    'Yanapiri Bot'
+  end
+
+  def email
+    'bot@yanapiri.org'
+  end
+
+  def git_author
+    "#{nombre} <#{email}>"
+  end
+
   private
 
   def crear_pull_request!(entrega)
@@ -38,7 +50,7 @@ class Bot
       File.open(proyecto_wollok, "w") {|file| file.puts xml.sub(/<name>.*<\/name>/, "<name>#{entrega.id}</name>") }
     end
 
-    entrega.repo.commit_all 'Renombrado proyecto Wollok'
+    entrega.repo.commit_all 'Renombrado proyecto Wollok', author: git_author
   end
 
   def publicar_cambios!(entrega)
