@@ -1,6 +1,7 @@
 require 'octokit'
 require 'git'
 require 'thor'
+require 'yaml'
 
 require_relative './yanapiri/version'
 require_relative './yanapiri/entrega'
@@ -11,13 +12,11 @@ module Yanapiri
     include Thor::Actions
     class_option :verbose, {type: :boolean, aliases: :v}
     class_option :orga, {aliases: :o}
+    class_option :github_token
 
     def initialize(args = [], local_options = {}, config = {})
       super(args, local_options, config)
-      organization = options.orga || 'obj1-unahur-2019s1'
-      gh_token = ENV['YANAPIRI_GH_TOKEN']
-
-      @bot = Bot.new(organization, gh_token)
+      @bot = Bot.new(options.orga, options.github_token)
     end
 
     desc 'whoami', 'Organización y usuario con el que se está trabajando'
@@ -90,6 +89,17 @@ module Yanapiri
 
       def log(mensaje)
         puts mensaje if options[:verbose]
+      end
+
+      def config_file
+        File.expand_path '~/.yanapiri'
+      end
+
+      def options
+        original_options = super
+        return original_options unless File.exists? config_file
+        defaults = YAML.load_file config_file || {}
+        Thor::CoreExt::HashWithIndifferentAccess.new defaults.merge(original_options)
       end
     end
   end
