@@ -38,6 +38,10 @@ class Bot
     "#{nombre} <#{email}>"
   end
 
+  def github_user
+    @gh_client.user
+  end
+
   private
 
   def crear_pull_request!(entrega)

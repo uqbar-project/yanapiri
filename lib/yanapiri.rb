@@ -28,7 +28,10 @@ module Yanapiri
       config.github_token = ask 'Token de GitHub (lo necesito para armar los pull requests):'
       config.orga = ask 'Organización por defecto:'
 
-      dump_config! config
+      bot = Bot.new(config.orga, config.github_token)
+      say "Genial. Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses."
+
+      dump_config! config.to_h
     end
 
     desc 'whoami', 'Organización y usuario con el que se está trabajando'
