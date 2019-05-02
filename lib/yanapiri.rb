@@ -25,10 +25,10 @@ module Yanapiri
       true
     end
 
-    map %w[--version -v] => :__print_version
+    map %w(--version -v) => :version
     desc "--version, -v", "Muestra la versión actual de Yanapiri"
-    def __print_version
-      say VERSION
+    def version
+      say "yanapiri version #{VERSION}"
     end
 
     desc 'setup', 'Configura a Yanapiri para el primer uso'
