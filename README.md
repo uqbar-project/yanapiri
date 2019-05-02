@@ -1,28 +1,45 @@
 # Yanapiri
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/yanapiri`. To experiment with that code, run `bin/console` for an interactive prompt.
+## Instalación
 
-TODO: Delete this and the text above, and describe your gem
+Yanapiri funciona con Ruby, por lo cual es necesario instalarlo antes. Podés consultar cómo hacerlo en [la documentación oficial](https://www.ruby-lang.org/es/documentation/installation/).
 
-## Installation
+Una vez que tu entorno Ruby esté funcionando, ejecutá lo siguiente:
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'yanapiri'
+```
+gem install yanapiri
 ```
 
-And then execute:
+## Uso
 
-    $ bundle
+Lo primero que tenés que hacer es ejecutar `yanapiri setup`, lo cual te va a preguntar con qué organización querés trabajar por defecto y te va a pedir un access token de un usuario que pueda pushear a esa organización.
 
-Or install it yourself as:
+Luego podrás ejecutar cualquiera de los demás comandos. Podés ver una lista ejecutando `yanapiri help`.
+Un flujo de trabajo típico sería el siguiente:
 
-    $ gem install yanapiri
+```
+yanapiri clonar entrega-1
+yanapiri corregir entrega-1 --commit-base 326336a8ba771611 --fecha-limite "2019-05-01 23:59:59"
+```
 
-## Usage
+### Trabajando con más de una organización
 
-TODO: Write usage instructions here
+Yanapiri soporta tres formas de configurar la organización:
+* global, que se configura con `yanapiri setup`;
+* local, que se configura con `yanapiri init`;
+* por parámetro, que se configura con la opción `--orga`.
+
+Para los casos en que se necesite trabajar regularmente con más de una organización (por ejemplo, si tenés varios cursos) conviene utilizar la configuración local.
+
+Un ejemplo de estructura de directorios podría ser el siguiente:
+
+```
+entregas
+├── une-objetos1
+└── unlu-intro
+```
+
+Para escribir la configuración local, habría que ejecutar `yanapiri init` en cada uno de los subdirectorios.
 
 ## Development
 
