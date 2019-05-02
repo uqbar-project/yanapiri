@@ -2,6 +2,7 @@ require 'octokit'
 require 'git'
 require 'thor'
 require 'yaml'
+require 'ostruct'
 
 require_relative './yanapiri/version'
 require_relative './yanapiri/entrega'
@@ -17,6 +18,17 @@ module Yanapiri
     def initialize(args = [], local_options = {}, config = {})
       super(args, local_options, config)
       @bot = Bot.new(options.orga, options.github_token)
+    end
+
+    desc 'setup', 'Configura a Yanapiri para el primer uso'
+    def setup
+      say '¡Kamisaraki! Yo soy Yanapiri, tu ayudante, y necesito algunos datos antes de empezar:'
+
+      config = OpenStruct.new
+      config.github_token = ask 'Token de GitHub (lo necesito para armar los pull requests):'
+      config.orga = ask 'Organización por defecto:'
+
+      dump_config! config
     end
 
     desc 'whoami', 'Organización y usuario con el que se está trabajando'
@@ -93,6 +105,10 @@ module Yanapiri
 
       def config_file
         File.expand_path '~/.yanapiri'
+      end
+
+      def dump_config!(config)
+        File.write config_file, config.to_yaml
       end
 
       def options
