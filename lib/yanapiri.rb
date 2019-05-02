@@ -20,6 +20,10 @@ module Yanapiri
       @bot = Bot.new(options.orga, options.github_token)
     end
 
+    def self.exit_on_failure?
+      true
+    end
+
     desc 'setup', 'Configura a Yanapiri para el primer uso'
     def setup
       say '¡Kamisaraki! Yo soy Yanapiri, tu ayudante, y necesito algunos datos antes de empezar:', :bold
