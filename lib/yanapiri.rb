@@ -1,6 +1,9 @@
 require 'octokit'
 require 'git'
 require 'thor'
+require 'yaml'
+require 'ostruct'
+require 'active_support/all'
 
 require_relative './yanapiri/version'
 require_relative './yanapiri/entrega'
@@ -10,15 +13,51 @@ module Yanapiri
   class CLI < Thor
     include Thor::Actions
     class_option :verbose, {type: :boolean, aliases: :v}
+    class_option :orga, {aliases: :o}
+    class_option :github_token
 
-    desc 'whoami', 'Organización y usuario con el que se está trabajando'
+    def initialize(args = [], local_options = {}, config = {})
+      super(args, local_options, config)
+      @bot = Bot.new(options.orga, options.github_token)
+    end
+
+    def self.exit_on_failure?
+      true
+    end
+
+    desc 'setup', 'Configura a Yanapiri para el primer uso'
+    def setup
+      say '¡Kamisaraki! Yo soy Yanapiri, tu ayudante, y necesito algunos datos antes de empezar:', :bold
+
+      config = OpenStruct.new
+      config.github_token = ask 'Token de GitHub (lo necesito para armar los pull requests):'
+      config.orga = ask 'Organización por defecto:'
+
+      begin
+        bot = Bot.new(config.orga, config.github_token)
+        success "Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses."
+        dump_global_config! config
+      rescue Octokit::Unauthorized
+        raise 'El access token de GitHub no es correcto, revisalo por favor.'
+      end
+    end
+
+    desc 'init', 'Inicializa una carpeta para contener entregas'
+    def init
+      config = OpenStruct.new
+      config.orga = ask 'Nombre de la organización:', default: File.basename(Dir.pwd)
+      success "De ahora en más, trabajaré con la organización #{config.orga} siempre que estés dentro de esta carpeta."
+      dump_local_config! config
+    end
+
+    desc 'whoami', 'Muestra organización y usuario con el que se está trabajando'
     def whoami
-      puts "Estoy trabajando en la organización #{$bot.organization}, commiteando con el usuario #{$bot.git_author}."
+      say "Estoy trabajando en la organización #{@bot.organization}, commiteando con el usuario #{@bot.git_author}."
     end
 
     desc 'clonar [ENTREGA]', 'Clona todos los repositorios de la entrega dentro de una subcarpeta'
     def clonar(nombre)
-      $bot.clonar_entrega!(nombre)
+      @bot.clonar_entrega!(nombre)
     end
 
     option :repo_base, {required: true, aliases: :b}
@@ -42,7 +81,7 @@ module Yanapiri
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
     def corregir(nombre)
       foreach_entrega(nombre) do |entrega|
-        $bot.preparar_correccion! entrega, options.commit_base
+        @bot.preparar_correccion! entrega, options.commit_base
       end
     end
 
@@ -82,13 +121,49 @@ module Yanapiri
       def log(mensaje)
         puts mensaje if options[:verbose]
       end
+
+      def global_config_file
+        File.expand_path "~/#{config_file_name}"
+      end
+
+      def local_config_file
+        File.expand_path config_file_name
+      end
+
+      def config_file_name
+        '.yanapiri'
+      end
+
+      def dump_global_config!(config)
+        dump_config! global_config_file, config
+      end
+
+      def dump_local_config!(config)
+        dump_config! local_config_file, config
+      end
+
+      def dump_config!(destination, config)
+        File.write destination, config.to_h.stringify_keys.to_yaml
+      end
+
+      def load_config(source)
+        if File.exist? source then YAML.load_file source else {} end
+      end
+
+      def options
+        original_options = super
+        defaults_global = load_config global_config_file
+        defaults_local = load_config local_config_file
+        Thor::CoreExt::HashWithIndifferentAccess.new defaults_global.merge(defaults_local).merge(original_options)
+      end
+
+      def raise(message)
+        super Thor::Error, set_color(message, :red)
+      end
+
+      def success(message)
+        say "Yuspagara. #{message}", :green
+      end
     end
   end
 end
-
-organization = 'obj1-unahur-2019s1'
-gh_token = ENV['YANAPIRI_GH_TOKEN']
-
-$bot = Bot.new(organization, gh_token)
-
-Yanapiri::CLI.start(ARGV)

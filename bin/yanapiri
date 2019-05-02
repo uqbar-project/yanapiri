@@ -1,3 +1,5 @@
 #!/usr/bin/env ruby
 
 require "yanapiri"
+
+Yanapiri::CLI.start(ARGV)
