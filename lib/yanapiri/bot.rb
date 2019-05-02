@@ -18,7 +18,46 @@ class Bot
     end
   end
 
-  def crear_pull_request!(id, mensaje)
-    @gh_client.create_pull_request("#{@organization}/#{id}", "base", "entrega", "Corrección", mensaje) rescue nil
+  def preparar_correccion!(entrega, commit_base)
+    entrega.crear_branch! 'base', commit_base
+    entrega.crear_branch! 'entrega', 'master'
+    renombrar_proyecto_wollok! entrega
+    publicar_cambios! entrega
+    crear_pull_request! entrega
+  end
+
+  def nombre
+    'Yanapiri Bot'
+  end
+
+  def email
+    'bot@yanapiri.org'
+  end
+
+  def git_author
+    "#{nombre} <#{email}>"
+  end
+
+  private
+
+  def crear_pull_request!(entrega)
+    @gh_client.create_pull_request("#{@organization}/#{entrega.id}", "base", "entrega", "Corrección", entrega.mensaje_pull_request) rescue nil
+  end
+
+  def renombrar_proyecto_wollok!(entrega)
+    entrega.repo.chdir do
+      xml = File.read proyecto_wollok
+      File.open(proyecto_wollok, "w") {|file| file.puts xml.sub(/<name>.*<\/name>/, "<name>#{entrega.id}</name>") }
+    end
+
+    entrega.repo.commit_all 'Renombrado proyecto Wollok', author: git_author
+  end
+
+  def publicar_cambios!(entrega)
+    entrega.repo.push 'origin', '--all'
+  end
+
+  def proyecto_wollok
+    '.project'
   end
 end

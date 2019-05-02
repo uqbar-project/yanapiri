@@ -1,5 +1,5 @@
 class Entrega
-  attr_reader :fecha_limite
+  attr_reader :id, :fecha_limite, :repo
 
   def initialize(base_path, id, fecha_limite = Time.now)
     @base_path = base_path
@@ -8,18 +8,8 @@ class Entrega
     @repo = Git.open "#{@base_path}/#{@id}"
   end
 
-  def preparar_correccion!(commit_base)
-    crear_branch_base!(commit_base)
-    crear_branch_entrega!
-    renombrar_proyecto_wollok!
-  end
-
   def crear_pull_request!(bot)
     bot.crear_pull_request!(@id, mensaje_pull_request)
-  end
-
-  def publicar_cambios!
-    @repo.push 'origin', '--all'
   end
 
   def fuera_de_termino?
@@ -48,32 +38,14 @@ class Entrega
     "#{autor} hizo su último commit el #{fecha}." + (fuera_de_termino? ? " Fuera de término." : "")
   end
 
+  def crear_branch!(nombre, head)
+    @repo.checkout head
+    @repo.branch(nombre).checkout
+  end
+
   private
 
   def formato_humano(fecha)
     fecha.strftime("%d/%m/%Y a las %H:%M")
-  end
-
-  def proyecto_wollok
-    '.project'
-  end
-
-  def crear_branch_base!(commit_base)
-    @repo.checkout commit_base
-    @repo.branch('base').checkout
-  end
-
-  def crear_branch_entrega!
-    @repo.checkout 'master'
-    @repo.branch('entrega').checkout
-  end
-
-  def renombrar_proyecto_wollok!
-    @repo.chdir do
-      xml = File.read proyecto_wollok
-      File.open(proyecto_wollok, "w") {|file| file.puts xml.sub(/<name>.*<\/name>/, "<name>#{@id}</name>") }
-    end
-
-    @repo.commit_all 'Renombrado proyecto Wollok'
   end
 end

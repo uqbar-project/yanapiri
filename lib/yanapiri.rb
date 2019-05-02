@@ -7,32 +7,13 @@ require_relative './yanapiri/entrega'
 require_relative './yanapiri/bot'
 
 module Yanapiri
-  module GitUser
-    def self.name
-      'Yanapiri Bot'
-    end
-
-    def self.email
-      'federico.aloi+yanapiribot@gmail.com'
-    end
-
-    def self.full_name
-      "#{name} <#{email}>"
-    end
-
-    def self.configurar!
-      Git.global_config('user.name', name)
-      Git.global_config('user.email', email)
-    end
-  end
-
   class CLI < Thor
     include Thor::Actions
     class_option :verbose, {type: :boolean, aliases: :v}
 
     desc 'whoami', 'Organización y usuario con el que se está trabajando'
     def whoami
-      puts "Estoy trabajando en la organización #{$bot.organization}, commiteando con el usuario #{GitUser.full_name}."
+      puts "Estoy trabajando en la organización #{$bot.organization}, commiteando con el usuario #{$bot.git_author}."
     end
 
     desc 'clonar [ENTREGA]', 'Clona todos los repositorios de la entrega dentro de una subcarpeta'
@@ -61,9 +42,7 @@ module Yanapiri
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
     def corregir(nombre)
       foreach_entrega(nombre) do |entrega|
-        entrega.preparar_correccion! options.commit_base
-        entrega.publicar_cambios!
-        entrega.crear_pull_request! $bot
+        $bot.preparar_correccion! entrega, options.commit_base
       end
     end
 
@@ -107,10 +86,8 @@ module Yanapiri
   end
 end
 
-Yanapiri::GitUser.configurar!
-
 organization = 'obj1-unahur-2019s1'
-gh_token = ENV['YANAPIRI_GH_TOKEN'] or raise "Token de GitHub no encontrado, asegurate de que está guardado en la variable de entorno YANAPIRI_GH_TOKEN. Si no tenés un token, podés generarlo en https://github.com/settings/tokens, con al menos scope 'repo'."
+gh_token = ENV['YANAPIRI_GH_TOKEN']
 
 $bot = Bot.new(organization, gh_token)
 
