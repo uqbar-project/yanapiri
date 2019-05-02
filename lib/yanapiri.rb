@@ -25,6 +25,12 @@ module Yanapiri
       true
     end
 
+    map %w[--version -v] => :__print_version
+    desc "--version, -v", "Muestra la versión actual de Yanapiri"
+    def __print_version
+      say VERSION
+    end
+
     desc 'setup', 'Configura a Yanapiri para el primer uso'
     def setup
       say '¡Kamisaraki! Yo soy Yanapiri, tu ayudante, y necesito algunos datos antes de empezar:', :bold
