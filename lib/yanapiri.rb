@@ -37,7 +37,7 @@ module Yanapiri
         say "Yuspagara. Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses.", :green
         dump_config! config.to_h
       rescue Octokit::Unauthorized
-        raise Thor::Error, set_color('El access token de GitHub no es correcto, revisalo por favor.', :red)
+        raise 'El access token de GitHub no es correcto, revisalo por favor.'
       end
     end
 
@@ -126,6 +126,10 @@ module Yanapiri
         return original_options unless File.exists? config_file
         defaults = YAML.load_file config_file || {}
         Thor::CoreExt::HashWithIndifferentAccess.new defaults.merge(original_options)
+      end
+
+      def raise(message)
+        super Thor::Error, set_color(message, :red)
       end
     end
   end
