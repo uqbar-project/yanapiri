@@ -10,10 +10,11 @@ module Yanapiri
   class CLI < Thor
     include Thor::Actions
     class_option :verbose, {type: :boolean, aliases: :v}
+    class_option :orga, {aliases: :o}
 
     def initialize(args = [], local_options = {}, config = {})
       super(args, local_options, config)
-      organization = 'obj1-unahur-2019s1'
+      organization = options.orga || 'obj1-unahur-2019s1'
       gh_token = ENV['YANAPIRI_GH_TOKEN']
 
       @bot = Bot.new(organization, gh_token)
