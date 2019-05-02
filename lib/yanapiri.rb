@@ -36,7 +36,7 @@ module Yanapiri
       begin
         bot = Bot.new(config.orga, config.github_token)
         success "Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses."
-        dump_config! config.to_h
+        dump_global_config! config.to_h
       rescue Octokit::Unauthorized
         raise 'El access token de GitHub no es correcto, revisalo por favor.'
       end
@@ -122,26 +122,34 @@ module Yanapiri
         puts mensaje if options[:verbose]
       end
 
-      def config_file
-        File.expand_path '~/.yanapiri'
+      def global_config_file
+        File.expand_path "~/#{config_file_name}"
       end
 
       def local_config_file
-        File.expand_path '.yanapiri'
+        File.expand_path config_file_name
       end
 
-      def dump_config!(config)
-        File.write config_file, config.stringify_keys.to_yaml
+      def config_file_name
+        '.yanapiri'
+      end
+
+      def dump_global_config!(config)
+        dump_config! global_config_file, config
       end
 
       def dump_local_config!(config)
-        File.write local_config_file, config.stringify_keys.to_yaml
+        dump_config! local_config_file, config
+      end
+
+      def dump_config!(destination, config)
+        File.write destination, config.stringify_keys.to_yaml
       end
 
       def options
         original_options = super
-        return original_options unless File.exists? config_file
-        defaults = YAML.load_file config_file || {}
+        return original_options unless File.exists? global_config_file
+        defaults = YAML.load_file global_config_file || {}
         Thor::CoreExt::HashWithIndifferentAccess.new defaults.merge(original_options)
       end
 
