@@ -25,6 +25,12 @@ module Yanapiri
       true
     end
 
+    map %w[--version -v] => :__print_version
+    desc "--version, -v", "Muestra la versión actual de Yanapiri"
+    def __print_version
+      say VERSION
+    end
+
     desc 'setup', 'Configura a Yanapiri para el primer uso'
     def setup
       say '¡Kamisaraki! Yo soy Yanapiri, tu ayudante, y necesito algunos datos antes de empezar:', :bold
@@ -74,6 +80,12 @@ module Yanapiri
       end
 
       `rm -rf #{path_repo_base}`
+    end
+
+    option :repo_base, {required: true, aliases: :b}
+    desc 'preparar [ENTREGA]', 'Crea el repositorio que va a servir de base para la entrega, con un solo commit en la rama master'
+    def preparar(nombre)
+      @bot.preparar_entrega! nombre, options.repo_base
     end
 
     desc 'corregir [ENTREGA]', 'Prepara la entrega para la corrección, creando los archivos y el pull request'
