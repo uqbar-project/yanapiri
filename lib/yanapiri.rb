@@ -3,6 +3,7 @@ require 'git'
 require 'thor'
 require 'yaml'
 require 'ostruct'
+require 'active_support/all'
 
 require_relative './yanapiri/version'
 require_relative './yanapiri/entrega'
@@ -34,16 +35,24 @@ module Yanapiri
 
       begin
         bot = Bot.new(config.orga, config.github_token)
-        say "Yuspagara. Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses.", :green
+        success "Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses."
         dump_config! config.to_h
       rescue Octokit::Unauthorized
         raise 'El access token de GitHub no es correcto, revisalo por favor.'
       end
     end
 
-    desc 'whoami', 'Organización y usuario con el que se está trabajando'
+    desc 'init', 'Inicializa una carpeta para contener entregas'
+    def init
+      config = OpenStruct.new
+      config.orga = ask 'Nombre de la organización:', default: File.basename(Dir.pwd)
+      success "De ahora en más, todas las entregas con las que trabajes dentro de esta carpeta serán buscadas en la organización #{config.orga}."
+      dump_local_config! config.to_h
+    end
+
+    desc 'whoami', 'Muestra organización y usuario con el que se está trabajando'
     def whoami
-      puts "Estoy trabajando en la organización #{@bot.organization}, commiteando con el usuario #{@bot.git_author}."
+      say "Estoy trabajando en la organización #{@bot.organization}, commiteando con el usuario #{@bot.git_author}."
     end
 
     desc 'clonar [ENTREGA]', 'Clona todos los repositorios de la entrega dentro de una subcarpeta'
@@ -117,8 +126,16 @@ module Yanapiri
         File.expand_path '~/.yanapiri'
       end
 
+      def local_config_file
+        File.expand_path '.yanapiri'
+      end
+
       def dump_config!(config)
-        File.write config_file, config.to_yaml
+        File.write config_file, config.stringify_keys.to_yaml
+      end
+
+      def dump_local_config!(config)
+        File.write local_config_file, config.stringify_keys.to_yaml
       end
 
       def options
@@ -130,6 +147,10 @@ module Yanapiri
 
       def raise(message)
         super Thor::Error, set_color(message, :red)
+      end
+
+      def success(message)
+        say "Yuspagara. #{message}", :green
       end
     end
   end
