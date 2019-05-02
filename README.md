@@ -1,5 +1,9 @@
 # Yanapiri
 
+Yanapiri es un vocablo aymara que significa "ayudante" o "el que ayuda". 
+
+A partir de este humilde aporte, es también una aplicación de línea de comandos (CLI) para asistir a docentes en ciertas tareas relacionadas al manejo de entregas a través de [GitHub Classroom](https://classroom.github.com/).
+
 ## Instalación
 
 Yanapiri funciona con Ruby, por lo cual es necesario instalarlo antes. Podés consultar cómo hacerlo en [la documentación oficial](https://www.ruby-lang.org/es/documentation/installation/).
