@@ -13,7 +13,7 @@ module Yanapiri
     end
 
     def self.email
-      'federico.aloi+yanapiribot@gmail.com'
+      'bot@yanapiri.org'
     end
 
     def self.full_name
