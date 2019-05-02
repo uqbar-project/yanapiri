@@ -36,7 +36,7 @@ module Yanapiri
       begin
         bot = Bot.new(config.orga, config.github_token)
         success "Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses."
-        dump_global_config! config.to_h
+        dump_global_config! config
       rescue Octokit::Unauthorized
         raise 'El access token de GitHub no es correcto, revisalo por favor.'
       end
@@ -47,7 +47,7 @@ module Yanapiri
       config = OpenStruct.new
       config.orga = ask 'Nombre de la organización:', default: File.basename(Dir.pwd)
       success "De ahora en más, trabajaré con la organización #{config.orga} siempre que estés dentro de esta carpeta."
-      dump_local_config! config.to_h
+      dump_local_config! config
     end
 
     desc 'whoami', 'Muestra organización y usuario con el que se está trabajando'
@@ -143,7 +143,7 @@ module Yanapiri
       end
 
       def dump_config!(destination, config)
-        File.write destination, config.stringify_keys.to_yaml
+        File.write destination, config.to_h.stringify_keys.to_yaml
       end
 
       def load_config(source)
