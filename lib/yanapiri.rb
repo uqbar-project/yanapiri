@@ -11,14 +11,22 @@ module Yanapiri
     include Thor::Actions
     class_option :verbose, {type: :boolean, aliases: :v}
 
+    def initialize(args = [], local_options = {}, config = {})
+      super(args, local_options, config)
+      organization = 'obj1-unahur-2019s1'
+      gh_token = ENV['YANAPIRI_GH_TOKEN']
+
+      @bot = Bot.new(organization, gh_token)
+    end
+
     desc 'whoami', 'Organización y usuario con el que se está trabajando'
     def whoami
-      puts "Estoy trabajando en la organización #{$bot.organization}, commiteando con el usuario #{$bot.git_author}."
+      puts "Estoy trabajando en la organización #{@bot.organization}, commiteando con el usuario #{@bot.git_author}."
     end
 
     desc 'clonar [ENTREGA]', 'Clona todos los repositorios de la entrega dentro de una subcarpeta'
     def clonar(nombre)
-      $bot.clonar_entrega!(nombre)
+      @bot.clonar_entrega!(nombre)
     end
 
     option :repo_base, {required: true, aliases: :b}
@@ -42,7 +50,7 @@ module Yanapiri
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
     def corregir(nombre)
       foreach_entrega(nombre) do |entrega|
-        $bot.preparar_correccion! entrega, options.commit_base
+        @bot.preparar_correccion! entrega, options.commit_base
       end
     end
 
@@ -85,10 +93,5 @@ module Yanapiri
     end
   end
 end
-
-organization = 'obj1-unahur-2019s1'
-gh_token = ENV['YANAPIRI_GH_TOKEN']
-
-$bot = Bot.new(organization, gh_token)
 
 Yanapiri::CLI.start(ARGV)
