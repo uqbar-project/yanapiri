@@ -146,11 +146,15 @@ module Yanapiri
         File.write destination, config.stringify_keys.to_yaml
       end
 
+      def load_config(source)
+        if File.exist? source then YAML.load_file source else {} end
+      end
+
       def options
         original_options = super
-        return original_options unless File.exists? global_config_file
-        defaults = YAML.load_file global_config_file || {}
-        Thor::CoreExt::HashWithIndifferentAccess.new defaults.merge(original_options)
+        defaults_global = load_config global_config_file
+        defaults_local = load_config local_config_file
+        Thor::CoreExt::HashWithIndifferentAccess.new defaults_global.merge(defaults_local).merge(original_options)
       end
 
       def raise(message)
