@@ -46,7 +46,7 @@ module Yanapiri
     def init
       config = OpenStruct.new
       config.orga = ask 'Nombre de la organización:', default: File.basename(Dir.pwd)
-      success "De ahora en más, todas las entregas con las que trabajes dentro de esta carpeta serán buscadas en la organización #{config.orga}."
+      success "De ahora en más, trabajaré con la organización #{config.orga} siempre que estés dentro de esta carpeta."
       dump_local_config! config.to_h
     end
 
