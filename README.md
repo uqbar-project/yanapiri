@@ -3,6 +3,9 @@
 
 # Yanapiri
 
+![logo](https://user-images.githubusercontent.com/1585835/57146278-53838f00-6d9b-11e9-9875-56dc509e4943.png)
+
+
 Yanapiri es un vocablo aymara que significa "ayudante" o "el que ayuda". 
 
 A partir de este humilde aporte, es también una aplicación de línea de comandos (CLI) para asistir a docentes en ciertas tareas relacionadas al manejo de entregas a través de [GitHub Classroom](https://classroom.github.com/).
@@ -17,11 +20,15 @@ Una vez que tu entorno Ruby esté funcionando, ejecutá lo siguiente:
 gem install yanapiri
 ```
 
+Luego, por única vez, deberás darle a `yanapiri` un access token de GitHub y una organización por defecto sobre la cual trabajar. Para ello, ejecutá el siguiente comando:
+
+```
+yanapiri setup
+```
+
 ## Uso
 
-Lo primero que tenés que hacer es ejecutar `yanapiri setup`, lo cual te va a preguntar con qué organización querés trabajar por defecto y te va a pedir un access token de un usuario que pueda pushear a esa organización.
-
-Luego podrás ejecutar cualquiera de los demás comandos. Podés ver una lista ejecutando `yanapiri help`.
+Podés ver una lista de los comandos existentes ejecutando `yanapiri help`.
 Un flujo de trabajo típico sería el siguiente:
 
 ```
@@ -48,12 +55,6 @@ entregas
 
 Para escribir la configuración local, habría que ejecutar `yanapiri init` en cada uno de los subdirectorios.
 
-## Development
+## Agradecimientos
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
-
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
-
-## Contributing
-
-Bug reports and pull requests are welcome on GitHub at https://github.com/faloi/yanapiri.
+Gracias a [Elizabeth Arostegui](http://www.coloripop.com/), autora de la cholita que usamos como logo de Yanapiri. Podés ver otros íconos de esa gran colección entrando a su sitio [Cosmocollita](http://cosmocollita.com/).
