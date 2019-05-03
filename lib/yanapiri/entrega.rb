@@ -43,6 +43,10 @@ class Entrega
     @repo.branch(nombre).checkout
   end
 
+  def contiene_archivo?(nombre)
+    @repo.chdir { File.exist? nombre }
+  end
+
   private
 
   def formato_humano(fecha)

@@ -21,7 +21,7 @@ class Bot
   def preparar_correccion!(entrega, commit_base)
     entrega.crear_branch! 'base', commit_base
     entrega.crear_branch! 'entrega', 'master'
-    renombrar_proyecto_wollok! entrega
+    TransformacionWollok.transformar!(entrega, self) if TransformacionWollok.aplica?(entrega)
     publicar_cambios! entrega
     crear_pull_request! entrega
   end
@@ -48,6 +48,10 @@ class Bot
     @gh_client.user
   end
 
+  def commit!(repo, mensaje)
+    repo.commit_all mensaje, author: git_author
+  end
+
   private
 
   def aplanar_commits!(repo)
@@ -62,21 +66,8 @@ class Bot
     Git.clone "git@github.com:#{repo_slug}.git", repo_slug.split('/').last
   end
 
-  def commit!(repo, mensaje)
-    repo.commit_all mensaje, author: git_author
-  end
-
   def crear_pull_request!(entrega)
     @gh_client.create_pull_request("#{@organization}/#{entrega.id}", "base", "entrega", "Corrección", entrega.mensaje_pull_request) rescue nil
-  end
-
-  def renombrar_proyecto_wollok!(entrega)
-    entrega.repo.chdir do
-      xml = File.read proyecto_wollok
-      File.open(proyecto_wollok, "w") {|file| file.puts xml.sub(/<name>.*<\/name>/, "<name>#{entrega.id}</name>") }
-    end
-
-    commit! entrega.repo, 'Renombrado proyecto Wollok'
   end
 
   def publicar_repo!(nombre, repo)
@@ -92,9 +83,5 @@ class Bot
 
   def publicar_cambios!(entrega)
     entrega.repo.push 'origin', '--all'
-  end
-
-  def proyecto_wollok
-    '.project'
   end
 end

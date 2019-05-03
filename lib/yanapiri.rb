@@ -8,6 +8,7 @@ require 'active_support/all'
 require_relative './yanapiri/version'
 require_relative './yanapiri/entrega'
 require_relative './yanapiri/bot'
+require_relative './yanapiri/transformacion_wollok'
 
 module Yanapiri
   class CLI < Thor
