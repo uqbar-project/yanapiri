@@ -1,5 +1,5 @@
 {
-    "dataSource": "prs",
+    "dataSource": "issues",
     "onlyMilestones": false,
     "groupBy": false,
     "changelogFilename": "CHANGELOG.md"
