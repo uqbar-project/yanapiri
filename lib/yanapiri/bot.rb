@@ -7,7 +7,7 @@ class Bot
   end
 
   def clonar_entrega!(nombre)
-    result = @gh_client.search_repositories "org:#{@organization} #{nombre} in:name", {per_page: 200}
+    result = @gh_client.search_repositories "org:#{@organization} #{nombre}\\-", {per_page: 200}
     puts "Encontrados #{result.total_count} repositorios."
     FileUtils.mkdir_p nombre
     Dir.chdir(nombre) do
