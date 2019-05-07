@@ -4,6 +4,8 @@ require 'thor'
 require 'yaml'
 require 'ostruct'
 require 'active_support/all'
+require 'action_view'
+require 'action_view/helpers'
 
 require_relative './yanapiri/version'
 require_relative './yanapiri/entrega'
@@ -13,6 +15,8 @@ require_relative './yanapiri/transformacion_wollok'
 module Yanapiri
   class CLI < Thor
     include Thor::Actions
+    include ActionView::Helpers::DateHelper
+
     class_option :verbose, {type: :boolean, aliases: :v}
     class_option :orga, {aliases: :o}
     class_option :github_token
@@ -102,14 +106,20 @@ module Yanapiri
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
     option :solo_excedidos, {type: :boolean}
     def ultimo_commit(nombre)
-      foreach_entrega(nombre) do |entrega|
-        if not options.solo_excedidos or entrega.fuera_de_termino?
-          say entrega.mensaje_ultimo_commit, entrega.fuera_de_termino? ? :red : :clear
-        end
-      end
+      print_table entregas(nombre)
+          .select {|e| not options.solo_excedidos or e.fuera_de_termino?}
+          .sort_by(&:fecha)
+          .reverse!
+          .map(&method(:fila_ultimo_commit))
     end
 
     no_commands do
+      def fila_ultimo_commit(entrega)
+        fila = [entrega.autor, "hace #{time_ago_in_words entrega.fecha}", entrega.fecha.strftime("%d/%m/%Y %H:%M"), if entrega.fuera_de_termino? then '(Fuera de término)' else '' end]
+        color = if entrega.fuera_de_termino? then :red else :white end
+        fila.map {|s| set_color s, color }
+      end
+
       def foreach_repo(dir_base)
         Dir.chdir(dir_base) do
           working_dir = Dir.pwd
@@ -129,6 +139,12 @@ module Yanapiri
         foreach_repo(nombre) do |repo, base_path|
           yield Entrega.new base_path, repo, Time.parse(options.fecha_limite)
         end
+      end
+
+      def entregas(nombre)
+        resultado = []
+        foreach_entrega(nombre) { |e| resultado << e }
+        resultado
       end
 
       def log(mensaje)
@@ -180,3 +196,6 @@ module Yanapiri
     end
   end
 end
+
+I18n.load_path << Dir[File.join(File.dirname(__FILE__), '/locales') + '/*.yml']
+I18n.default_locale = 'es-AR'

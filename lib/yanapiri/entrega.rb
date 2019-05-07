@@ -34,10 +34,6 @@ class Entrega
     end
   end
 
-  def mensaje_ultimo_commit
-    "#{autor} hizo su último commit el #{fecha}." + (fuera_de_termino? ? " Fuera de término." : "")
-  end
-
   def crear_branch!(nombre, head)
     @repo.checkout head
     @repo.branch(nombre).checkout
