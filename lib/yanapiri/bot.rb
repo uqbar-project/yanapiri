@@ -7,13 +7,18 @@ class Bot
   end
 
   def clonar_entrega!(nombre)
-    result = @gh_client.search_repositories "org:#{@organization} #{nombre} in:name", {per_page: 200}
+    result = @gh_client.search_repositories "org:#{@organization} #{nombre}\\-", {per_page: 200}
     puts "Encontrados #{result.total_count} repositorios."
     FileUtils.mkdir_p nombre
     Dir.chdir(nombre) do
       result.items.each do |repo|
-        puts "Clonando #{repo.name}..."
-        clonar! repo.full_name
+        if File.exist? repo.name
+          puts "Actualizando #{repo.name}..."
+          actualizar! repo.name
+        else
+          puts "Clonando #{repo.name}..."
+          clonar! repo.full_name
+        end
       end
     end
   end
@@ -60,6 +65,10 @@ class Bot
       commit! repo, 'Enunciado preparado por Yanapiri'
       `git branch -M new-master master`
     end
+  end
+
+  def actualizar!(repo_path)
+    Git.open(repo_path).pull
   end
 
   def clonar!(repo_slug)
