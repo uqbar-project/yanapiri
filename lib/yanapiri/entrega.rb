@@ -1,6 +1,4 @@
 class Entrega
-  include ActionView::Helpers::DateHelper
-
   attr_reader :id, :fecha_limite, :repo
 
   def initialize(base_path, id, fecha_limite = Time.now)
@@ -34,10 +32,6 @@ class Entrega
     else
       ''
     end
-  end
-
-  def mensaje_ultimo_commit
-    "#{autor} hizo su último commit hace #{time_ago_in_words(fecha)}." + (fuera_de_termino? ? " Fuera de término." : "")
   end
 
   def crear_branch!(nombre, head)
