@@ -17,7 +17,6 @@ module Yanapiri
     include Thor::Actions
     include ActionView::Helpers::DateHelper
 
-    class_option :verbose, {type: :boolean, aliases: :v}
     class_option :orga, {aliases: :o}
     class_option :github_token
 
@@ -133,11 +132,9 @@ module Yanapiri
           repos = Dir.glob('*').select {|f| File.directory? f}.sort
 
           for repo in repos
-            log "Trabajando con #{repo}..."
             Dir.chdir "#{working_dir}/#{repo}" do
               yield repo, working_dir
             end
-            log "==============================\n"
           end
         end
       end
@@ -152,10 +149,6 @@ module Yanapiri
         resultado = []
         foreach_entrega(nombre) { |e| resultado << e }
         resultado
-      end
-
-      def log(mensaje)
-        puts mensaje if options[:verbose]
       end
 
       def global_config_file
