@@ -104,6 +104,7 @@ module Yanapiri
 
     desc 'ultimo_commit [ENTREGA]', 'Muestra la fecha del último commit de cada repositorio e indica si se pasó de la fecha límite'
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
+    option :commit_base, {aliases: :b}
     option :solo_excedidos, {type: :boolean}
     def ultimo_commit(nombre)
       print_table entregas(nombre)
@@ -115,7 +116,13 @@ module Yanapiri
 
     no_commands do
       def fila_ultimo_commit(entrega)
-        fila = [entrega.autor, "hace #{time_ago_in_words entrega.fecha}", entrega.fecha.strftime("%d/%m/%Y %H:%M"), if entrega.fuera_de_termino? then '(Fuera de término)' else '' end]
+        fecha = if options.commit_base and not entrega.hay_cambios?(options.commit_base)
+                  '(no hay cambios)'
+                else
+                  "hace #{time_ago_in_words entrega.fecha} (#{entrega.fecha.strftime "%d/%m/%Y %H:%M"})"
+                end
+
+        fila = [entrega.autor, fecha, if entrega.fuera_de_termino? then '---> Fuera de término' else '' end]
         color = if entrega.fuera_de_termino? then :red else :white end
         fila.map {|s| set_color s, color }
       end

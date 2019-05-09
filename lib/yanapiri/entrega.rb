@@ -43,6 +43,10 @@ class Entrega
     @repo.chdir { File.exist? nombre }
   end
 
+  def hay_cambios?(base)
+    @repo.log.between(base, 'master').any?
+  end
+
   private
 
   def formato_humano(fecha)
