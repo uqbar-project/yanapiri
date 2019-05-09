@@ -98,7 +98,7 @@ module Yanapiri
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
     def corregir(nombre)
       foreach_entrega(nombre) do |entrega|
-        @bot.preparar_correccion! entrega, options.commit_base
+        @bot.preparar_correccion! entrega
       end
     end
 

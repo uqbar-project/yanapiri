@@ -1,5 +1,5 @@
 class Entrega
-  attr_reader :id, :fecha_limite, :repo
+  attr_reader :id, :fecha_limite, :repo, :commit_base
 
   def initialize(base_path, id, commit_base, fecha_limite = Time.now)
     @base_path = base_path
