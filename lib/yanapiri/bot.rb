@@ -23,12 +23,16 @@ class Bot
     end
   end
 
-  def preparar_correccion!(entrega, commit_base)
-    entrega.crear_branch! 'base', commit_base
-    entrega.crear_branch! 'entrega', 'master'
-    TransformacionWollok.transformar!(entrega, self) if TransformacionWollok.aplica?(entrega)
-    publicar_cambios! entrega
-    crear_pull_request! entrega
+  def preparar_correccion!(entrega)
+    if not entrega.hay_cambios?
+      crear_issue_advertencia! entrega
+    else
+      entrega.crear_branch! 'base', entrega.commit_base
+      entrega.crear_branch! 'entrega', 'master'
+      TransformacionWollok.transformar!(entrega, self) if TransformacionWollok.aplica?(entrega)
+      publicar_cambios! entrega
+      crear_pull_request! entrega
+    end
   end
 
   def preparar_entrega!(nombre, repo_base)
@@ -76,7 +80,15 @@ class Bot
   end
 
   def crear_pull_request!(entrega)
-    @gh_client.create_pull_request("#{@organization}/#{entrega.id}", "base", "entrega", "Corrección", entrega.mensaje_pull_request) rescue nil
+    @gh_client.create_pull_request(gh_repo_para(entrega), "base", "entrega", "Corrección", entrega.mensaje_pull_request) rescue nil
+  end
+
+  def crear_issue_advertencia!(entrega)
+    @gh_client.create_issue(gh_repo_para(entrega), "Corrección", "¡Hola! Te estamos cargando esta _issue_ porque no subiste ningún cambio al repositorio y ya pasó la fecha de entrega. :pensive:\n\nPor favor, si tuviste algún problema acercate a hablar con tus docentes." )
+  end
+
+  def gh_repo_para(entrega)
+    "#{@organization}/#{entrega.id}"
   end
 
   def publicar_repo!(nombre, repo)
