@@ -2,5 +2,8 @@
     "dataSource": "issues",
     "onlyMilestones": false,
     "groupBy": false,
+    "template": {
+        "issue": "- [{{text}}]({{url}}) {{name}}"
+    },
     "changelogFilename": "CHANGELOG.md"
 }
