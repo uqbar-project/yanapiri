@@ -116,10 +116,10 @@ module Yanapiri
 
     no_commands do
       def fila_ultimo_commit(entrega)
-        fecha = if options.commit_base and not entrega.hay_cambios?(options.commit_base)
-                  '(no hay cambios)'
-                else
+        fecha = if entrega.hay_cambios?
                   "hace #{time_ago_in_words entrega.fecha} (#{entrega.fecha.strftime "%d/%m/%Y %H:%M"})"
+                else
+                  '(no hay cambios)'
                 end
 
         fila = [entrega.autor, fecha, if entrega.fuera_de_termino? then '---> Fuera de término' else '' end]
@@ -144,7 +144,7 @@ module Yanapiri
 
       def foreach_entrega(nombre)
         foreach_repo(nombre) do |repo, base_path|
-          yield Entrega.new base_path, repo, Time.parse(options.fecha_limite)
+          yield Entrega.new base_path, repo, options.commit_base, Time.parse(options.fecha_limite)
         end
       end
 

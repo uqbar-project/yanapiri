@@ -1,10 +1,11 @@
 class Entrega
   attr_reader :id, :fecha_limite, :repo
 
-  def initialize(base_path, id, fecha_limite = Time.now)
+  def initialize(base_path, id, commit_base, fecha_limite = Time.now)
     @base_path = base_path
     @id = id
     @fecha_limite = fecha_limite
+    @commit_base = commit_base || '--max-parents=0 HEAD'
     @repo = Git.open "#{@base_path}/#{@id}"
   end
 
@@ -43,8 +44,8 @@ class Entrega
     @repo.chdir { File.exist? nombre }
   end
 
-  def hay_cambios?(base)
-    @repo.log.between(base, 'master').any?
+  def hay_cambios?
+    @repo.log.between(@commit_base, 'master').any?
   end
 
   private
