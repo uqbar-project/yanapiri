@@ -2,7 +2,7 @@ module Yanapiri
   class Entrega
     attr_reader :id, :fecha_limite, :repo, :commit_base
 
-    def initialize(base_path, id, commit_base, fecha_limite = Time.now)
+    def initialize(base_path, id, commit_base = nil, fecha_limite = Time.now)
       @base_path = base_path
       @id = id
       @fecha_limite = fecha_limite

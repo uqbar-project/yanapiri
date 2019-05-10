@@ -1,4 +1,7 @@
 require 'rspec'
+require 'tmpdir'
+require 'fileutils'
+
 require_relative '../lib/yanapiri'
 
 RSpec.configure do |config|
