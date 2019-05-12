@@ -10,10 +10,6 @@ module Yanapiri
       @repo = Git.open "#{@base_path}/#{@id}"
     end
 
-    def crear_pull_request!(bot)
-      bot.crear_pull_request!(@id, mensaje_pull_request)
-    end
-
     def fuera_de_termino?
       @repo.checkout 'master'
       @repo.log.since(@fecha_limite.iso8601).any?
