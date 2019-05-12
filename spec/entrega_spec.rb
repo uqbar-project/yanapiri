@@ -1,24 +1,34 @@
 require_relative './spec_helper'
 
 describe Yanapiri::Entrega do
-  let(:repo) { Git.init "#{base_path}/#{id}" }
   let(:base_path) { Dir.mktmpdir }
+  let(:repo) { Git.init "#{base_path}/#{id}" }
   let(:id) { 'spa-faloi' }
-  let(:entrega) { Yanapiri::Entrega.new base_path, id}
+  let(:entrega) { Yanapiri::Entrega.new base_path, id, commit_base }
+  let(:commit_base) { nil }
 
   def crear_archivo(nombre)
     repo.chdir { FileUtils.touch nombre }
     repo.add
     repo.commit "Creado #{nombre}"
-    repo.gcommit 'HEAD'
+    repo.log.first
   end
 
-  context 'la fecha sale del último commit' do
-    let!(:ultimo_commit) do
-      crear_archivo '1.txt'
-      crear_archivo '2.txt'
+  let!(:commits) {%w(1.txt 2.txt).map(&method(:crear_archivo))}
+
+  describe 'la fecha sale del último commit' do
+    it { expect(entrega.fecha).to eq commits.last.author_date }
+  end
+
+  describe '#hay_cambios?' do
+    context 'con base anterior' do
+      let(:commit_base) { commits.first.sha }
+      it { expect(entrega.hay_cambios?).to be_truthy }
     end
 
-    it { expect(entrega.fecha).to eq ultimo_commit.author_date }
+    context 'con base igual a último commit' do
+      let(:commit_base) { commits.last.sha }
+      it { expect(entrega.hay_cambios?).to be_falsy }
+    end
   end
 end
