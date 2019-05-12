@@ -3,7 +3,7 @@ require_relative './spec_helper'
 describe Yanapiri::Entrega do
   let(:base_path) { Dir.mktmpdir }
   let(:repo) { Git.init "#{base_path}/#{id}" }
-  let(:id) { 'spa-faloi' }
+  let(:id) { 'entrega-de-ejemplo-faloi' }
   let(:entrega) { Yanapiri::Entrega.new base_path, id, commit_base }
   let(:commit_base) { nil }
 
@@ -30,5 +30,9 @@ describe Yanapiri::Entrega do
       let(:commit_base) { commits.last.sha }
       it { expect(entrega.hay_cambios?).to be_falsy }
     end
+  end
+
+  describe '#autor' do
+    it { expect(entrega.autor).to eq 'faloi' }
   end
 end
