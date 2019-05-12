@@ -1,9 +1,13 @@
 module GitHelpers
   def commit_archivo_nuevo!(nombre)
-    repo.chdir { FileUtils.touch nombre }
+    crear_archivo!(nombre)
     repo.add
     repo.commit "Creado #{nombre}"
-    commits << repo.log.first
+    repo.log.first
+  end
+
+  def crear_archivo!(nombre)
+    repo.chdir {FileUtils.touch nombre}
   end
 
   def crear_repo!(nombre)
@@ -15,6 +19,6 @@ module GitHelpers
   end
 
   def commits
-    @commits ||= []
+    repo.log.to_a.reverse
   end
 end

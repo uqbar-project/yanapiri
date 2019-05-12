@@ -59,7 +59,8 @@ module Yanapiri
     end
 
     def commit!(repo, mensaje)
-      repo.commit_all mensaje, author: git_author
+      repo.add
+      repo.commit mensaje, author: git_author
     end
 
     private
