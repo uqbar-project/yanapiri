@@ -16,7 +16,7 @@ describe Yanapiri::Entrega do
 
   let!(:commits) {%w(1.txt 2.txt).map(&method(:crear_archivo))}
 
-  describe 'la fecha sale del último commit' do
+  describe '#fecha' do
     it { expect(entrega.fecha).to eq commits.last.author_date }
   end
 
