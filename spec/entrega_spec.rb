@@ -5,7 +5,7 @@ describe Yanapiri::Entrega do
   let(:repo) { crear_repo! id }
   let(:commit_base) { nil }
   let(:fecha_limite) { nil }
-  let(:entrega) { Yanapiri::Entrega.new git_base_path, id, commit_base, fecha_limite }
+  let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commit_base, fecha_limite }
 
   let!(:commits) {%w(1.txt 2.txt).map(&method(:crear_archivo!))}
 

@@ -127,7 +127,7 @@ module Yanapiri
 
       def foreach_entrega(nombre)
         foreach_repo(nombre) do |repo, base_path|
-          yield Entrega.new base_path, repo, options.commit_base, Time.parse(options.fecha_limite)
+          yield Entrega.new "#{base_path}/#{repo}", options.commit_base, Time.parse(options.fecha_limite)
         end
       end
 

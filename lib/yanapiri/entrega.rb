@@ -2,12 +2,11 @@ module Yanapiri
   class Entrega
     attr_reader :id, :fecha_limite, :repo, :commit_base
 
-    def initialize(base_path, id, commit_base = nil, fecha_limite = nil)
-      @base_path = base_path
-      @id = id
+    def initialize(repo_path, commit_base = nil, fecha_limite = nil)
+      @id = File.basename repo_path
       @fecha_limite = fecha_limite || Time.now + 1.second
       @commit_base = commit_base || '--max-parents=0 HEAD'
-      @repo = Git.open "#{@base_path}/#{@id}"
+      @repo = Git.open repo_path
     end
 
     def fuera_de_termino?
