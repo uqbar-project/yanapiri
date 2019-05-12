@@ -11,7 +11,9 @@ module GitHelpers
   end
 
   def crear_repo!(nombre)
-    Git.init "#{git_base_path}/#{nombre}"
+    remote_path = Dir.mktmpdir
+    Git.init remote_path, {bare: true, repository: remote_path}
+    Git.clone remote_path, nombre, {path: "#{git_base_path}/#{nombre}"}
   end
 
   def git_base_path
