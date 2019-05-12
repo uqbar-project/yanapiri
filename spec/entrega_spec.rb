@@ -4,8 +4,9 @@ describe Yanapiri::Entrega do
   let(:base_path) { Dir.mktmpdir }
   let(:repo) { Git.init "#{base_path}/#{id}" }
   let(:id) { 'entrega-de-ejemplo-faloi' }
-  let(:entrega) { Yanapiri::Entrega.new base_path, id, commit_base }
   let(:commit_base) { nil }
+  let(:fecha_limite) { nil }
+  let(:entrega) { Yanapiri::Entrega.new base_path, id, commit_base, fecha_limite }
 
   def crear_archivo(nombre)
     repo.chdir { FileUtils.touch nombre }
@@ -34,5 +35,21 @@ describe Yanapiri::Entrega do
 
   describe '#autor' do
     it { expect(entrega.autor).to eq 'faloi' }
+  end
+
+  describe '#fuera_de_termino?' do
+    context 'sin fecha límite' do
+      it { expect(entrega.fuera_de_termino?).to be_falsey }
+    end
+
+    context 'con fecha anterior' do
+      let(:fecha_limite) { Time.now - 1.day }
+      it { expect(entrega.fuera_de_termino?).to be_truthy }
+    end
+
+    context 'con fecha posterior' do
+      let(:fecha_limite) { Time.now + 5.days }
+      it { expect(entrega.fuera_de_termino?).to be_falsey }
+    end
   end
 end
