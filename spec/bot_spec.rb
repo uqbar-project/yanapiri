@@ -2,7 +2,7 @@ require_relative './spec_helper'
 
 describe Yanapiri::Bot do
   let(:organization) { 'obj1-unahur-2019' }
-  let(:github_client) { double }
+  let(:github_client) { double 'github_client' }
   let(:bot) { Yanapiri::Bot.new organization, github_client }
   let(:repo) { crear_repo! 'ejemplo' }
   let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commits.first }
