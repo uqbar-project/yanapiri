@@ -1,21 +1,13 @@
 require_relative './spec_helper'
 
 describe Yanapiri::Entrega do
-  let(:base_path) { Dir.mktmpdir }
-  let(:repo) { Git.init "#{base_path}/#{id}" }
   let(:id) { 'entrega-de-ejemplo-faloi' }
+  let(:repo) { crear_repo! id }
   let(:commit_base) { nil }
   let(:fecha_limite) { nil }
-  let(:entrega) { Yanapiri::Entrega.new base_path, id, commit_base, fecha_limite }
+  let(:entrega) { Yanapiri::Entrega.new git_base_path, id, commit_base, fecha_limite }
 
-  def crear_archivo(nombre)
-    repo.chdir { FileUtils.touch nombre }
-    repo.add
-    repo.commit "Creado #{nombre}"
-    repo.log.first
-  end
-
-  let!(:commits) {%w(1.txt 2.txt).map(&method(:crear_archivo))}
+  let!(:commits) {%w(1.txt 2.txt).map(&method(:crear_archivo!))}
 
   describe '#fecha' do
     it { expect(entrega.fecha).to eq commits.last.author_date }
