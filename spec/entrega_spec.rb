@@ -7,7 +7,10 @@ describe Yanapiri::Entrega do
   let(:fecha_limite) { nil }
   let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commit_base, fecha_limite }
 
-  let!(:commits) {%w(1.txt 2.txt).map(&method(:crear_archivo!))}
+  before do
+    commit_archivo_nuevo! '1.txt'
+    commit_archivo_nuevo! '2.txt'
+  end
 
   describe '#fecha' do
     it { expect(entrega.fecha).to eq commits.last.author_date }

@@ -1,9 +1,9 @@
 module GitHelpers
-  def crear_archivo!(nombre)
+  def commit_archivo_nuevo!(nombre)
     repo.chdir { FileUtils.touch nombre }
     repo.add
     repo.commit "Creado #{nombre}"
-    repo.log.first
+    commits << repo.log.first
   end
 
   def crear_repo!(nombre)
@@ -12,5 +12,9 @@ module GitHelpers
 
   def git_base_path
     @git_base_path ||= Dir.mktmpdir
+  end
+
+  def commits
+    @commits ||= []
   end
 end
