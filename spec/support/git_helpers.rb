@@ -1,9 +1,10 @@
 module GitHelpers
   extend RSpec::Matchers::DSL
 
-  def commit_archivo_nuevo!(nombre, fecha = DateTime.now)
-    with_commit_time(fecha) do
-      crear_archivo!(nombre)
+  def commit_archivo_nuevo!(nombre, options = {})
+    config = {fecha: DateTime.now}.merge options
+    with_commit_time(config[:fecha]) do
+      if options[:source] then copiar_archivo!(options[:source], nombre) else crear_archivo!(nombre) end
       repo.add
       repo.commit "Creado #{nombre}"
       repo.log.first
@@ -12,6 +13,10 @@ module GitHelpers
 
   def crear_archivo!(nombre)
     repo.chdir {FileUtils.touch nombre}
+  end
+
+  def copiar_archivo!(origen, nombre)
+    FileUtils.cp "spec/data/#{origen}",  "#{repo.dir.path}/#{nombre}"
   end
 
   def crear_repo!(nombre)

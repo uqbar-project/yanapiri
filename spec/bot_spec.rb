@@ -4,7 +4,7 @@ describe Yanapiri::Bot do
   let(:organization) { 'obj1-unahur-2019' }
   let(:github_client) { double 'github_client' }
   let(:bot) { Yanapiri::Bot.new organization, github_client }
-  let(:repo) { crear_repo! 'ejemplo' }
+  let(:repo) { crear_repo! 'camion-transporte-warmichina' }
   let!(:commit_base) { commit_archivo_nuevo! '1.txt' }
   let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commit_base }
 
@@ -25,18 +25,32 @@ describe Yanapiri::Bot do
 
     context 'cuando hay cambios' do
       before do
-        commit_archivo_nuevo! 'solution.wlk'
+        crear_archivos_entrega!
         expect(github_client).to receive(:create_pull_request)
         bot.preparar_correccion! entrega
       end
 
-      it { expect(repo).to have_branch 'base' }
-      it { expect(repo).to have_remote_branch 'base' }
-      it { expect(repo.branches['base']).to have_last_commit commit_base }
+      context 'sin proyecto Wollok' do
+        def crear_archivos_entrega!
+          commit_archivo_nuevo! 'solution.txt'
+        end
 
-      it { expect(repo).to have_branch 'entrega' }
-      it { expect(repo).to have_remote_branch 'entrega' }
-      it { expect(repo.branches['entrega']).to have_last_commit commits.last }
+        it { expect(repo).to have_branch 'base' }
+        it { expect(repo).to have_remote_branch 'base' }
+        it { expect(repo.branches['base']).to have_last_commit commit_base }
+
+        it { expect(repo).to have_branch 'entrega' }
+        it { expect(repo).to have_remote_branch 'entrega' }
+        it { expect(repo.branches['entrega']).to have_last_commit commits.last }
+      end
+
+      context 'con proyecto Wollok' do
+        def crear_archivos_entrega!
+          commit_archivo_nuevo! '.project', {source: 'wollokProject'}
+        end
+
+        it { expect(repo.show 'entrega', '.project').to include '<name>camion-transporte-warmichina</name>'}
+      end
     end
   end
 
