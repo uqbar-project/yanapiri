@@ -8,7 +8,7 @@ describe Yanapiri::Entrega do
   let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commit_base, fecha_limite }
 
   before do
-    commit_archivo_nuevo! '1.txt'
+    commit_archivo_nuevo! '1.txt', DateTime.new(2019, 03, 25)
     commit_archivo_nuevo! '2.txt'
   end
 
