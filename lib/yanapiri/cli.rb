@@ -81,9 +81,10 @@ module Yanapiri
     desc 'corregir [ENTREGA]', 'Prepara la entrega para la corrección, creando los archivos y el pull request'
     option :commit_base, {required: true, aliases: :b}
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
+    option :renombrar_proyecto_wollok, {type: :boolean, default: true}
     def corregir(nombre)
       foreach_entrega(nombre) do |entrega|
-        @bot.preparar_correccion! entrega
+        @bot.preparar_correccion! entrega, options.renombrar_proyecto_wollok ? [TransformacionWollok] : []
       end
     end
 
