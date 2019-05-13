@@ -24,10 +24,12 @@ describe Yanapiri::Bot do
     end
 
     context 'cuando hay cambios' do
+      let(:transformaciones) { [Yanapiri::TransformacionWollok] }
+
       before do
         crear_archivos_entrega!
         expect(github_client).to receive(:create_pull_request)
-        bot.preparar_correccion! entrega
+        bot.preparar_correccion! entrega, transformaciones
       end
 
       context 'sin proyecto Wollok' do
@@ -49,7 +51,14 @@ describe Yanapiri::Bot do
           commit_archivo_nuevo! '.project', {source: 'wollokProject'}
         end
 
-        it { expect(repo.show 'entrega', '.project').to include '<name>camion-transporte-warmichina</name>'}
+        it 'con transformación' do
+          expect(repo.show 'entrega', '.project').to include '<name>camion-transporte-warmichina</name>'
+        end
+
+        context 'sin transformación' do
+          let(:transformaciones) { [] }
+          it { expect(repo.show 'entrega', '.project').not_to include '<name>camion-transporte-warmichina</name>' }
+        end
       end
     end
   end

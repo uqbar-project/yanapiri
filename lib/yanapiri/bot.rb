@@ -24,13 +24,13 @@ module Yanapiri
       end
     end
 
-    def preparar_correccion!(entrega)
+    def preparar_correccion!(entrega, transformaciones = [])
       if not entrega.hay_cambios?
         crear_issue_advertencia! entrega
       else
         entrega.crear_branch! 'base', entrega.commit_base
         entrega.crear_branch! 'entrega', 'master'
-        TransformacionWollok.transformar!(entrega, self) if TransformacionWollok.aplica?(entrega)
+        transformaciones.select {|t| t.aplica? entrega}.each {|t| t.transformar! entrega, self}
         publicar_cambios! entrega
         crear_pull_request! entrega
       end
