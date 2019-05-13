@@ -2,9 +2,9 @@ module Yanapiri
   class Bot
     attr_reader :organization
 
-    def initialize(organization, gh_token)
+    def initialize(organization, gh_client)
       @organization = organization
-      @gh_client = Octokit::Client.new(access_token: gh_token)
+      @gh_client = gh_client
     end
 
     def clonar_entrega!(nombre)
@@ -59,10 +59,9 @@ module Yanapiri
     end
 
     def commit!(repo, mensaje)
-      repo.commit_all mensaje, author: git_author
+      repo.add
+      repo.commit mensaje, author: git_author
     end
-
-    private
 
     def aplanar_commits!(repo)
       repo.chdir do
@@ -70,7 +69,11 @@ module Yanapiri
         commit! repo, 'Enunciado preparado por Yanapiri'
         `git branch -M new-master master`
       end
+
+      repo.branches.reject {|b| b.name == 'master'}.each(&:delete)
     end
+
+    private
 
     def actualizar!(repo_path)
       Git.open(repo_path).pull

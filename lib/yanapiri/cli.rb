@@ -8,7 +8,7 @@ module Yanapiri
 
     def initialize(args = [], local_options = {}, config = {})
       super(args, local_options, config)
-      @bot = Bot.new(options.orga, options.github_token)
+      @bot = crear_bot options
     end
 
     def self.exit_on_failure?
@@ -30,7 +30,7 @@ module Yanapiri
       config.orga = ask 'Organización por defecto:'
 
       begin
-        bot = Bot.new(config.orga, config.github_token)
+        bot = crear_bot config
         success "Los pull requests serán creados por @#{bot.github_user.login}, asegurate de que tenga los permisos necesarios en las organizaciones que uses."
         dump_global_config! config
       rescue Octokit::Unauthorized
@@ -100,6 +100,10 @@ module Yanapiri
     end
 
     no_commands do
+      def crear_bot(config)
+        Bot.new config.orga, Octokit::Client.new(access_token: config.github_token)
+      end
+
       def fila_ultimo_commit(entrega)
         fecha = if entrega.hay_cambios?
                   "hace #{time_ago_in_words entrega.fecha} (#{entrega.fecha.strftime "%d/%m/%Y %H:%M"})"
@@ -127,7 +131,7 @@ module Yanapiri
 
       def foreach_entrega(nombre)
         foreach_repo(nombre) do |repo, base_path|
-          yield Entrega.new base_path, repo, options.commit_base, Time.parse(options.fecha_limite)
+          yield Entrega.new "#{base_path}/#{repo}", options.commit_base, Time.parse(options.fecha_limite)
         end
       end
 
