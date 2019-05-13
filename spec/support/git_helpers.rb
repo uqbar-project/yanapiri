@@ -34,7 +34,11 @@ module GitHelpers
   end
 
   matcher :have_last_commit do |expected|
-    match {|actual| expect(expected).to eq_commit actual.gcommit}
+    match {|branch| expect(branch.gcommit).to eq_commit expected}
+  end
+
+  matcher :have_last_commit_message do |expected|
+    match {|branch| expect(branch.gcommit.message).to eq expected}
   end
 
   matcher :have_branch do |expected|

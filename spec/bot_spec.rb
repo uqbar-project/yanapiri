@@ -52,6 +52,7 @@ describe Yanapiri::Bot do
         end
 
         it 'con transformación' do
+          expect(repo.branches['entrega']).to have_last_commit_message 'Renombrado proyecto Wollok'
           expect(repo.show 'entrega', '.project').to include '<name>camion-transporte-warmichina</name>'
         end
 
