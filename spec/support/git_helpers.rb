@@ -1,4 +1,6 @@
 module GitHelpers
+  extend RSpec::Matchers::DSL
+
   def commit_archivo_nuevo!(nombre, fecha = DateTime.now)
     with_commit_time(fecha) do
       crear_archivo!(nombre)
@@ -24,6 +26,22 @@ module GitHelpers
 
   def commits
     repo.log.to_a.reverse
+  end
+
+  matcher :have_last_commit do |expected|
+    match {|actual| expect(expected).to eq_commit actual.gcommit}
+  end
+
+  matcher :have_branch do |expected|
+    match {|repo| expect(repo.branches.map &:name).to include expected}
+  end
+
+  matcher :have_remote_branch do |expected|
+    match {|repo| expect(repo.branches.remote.map &:name).to include expected}
+  end
+
+  matcher :eq_commit do |expected|
+    match {|actual| expect(expected.sha).to eq actual.sha}
   end
 
   private

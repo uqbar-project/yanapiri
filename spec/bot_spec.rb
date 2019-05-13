@@ -5,11 +5,8 @@ describe Yanapiri::Bot do
   let(:github_client) { double 'github_client' }
   let(:bot) { Yanapiri::Bot.new organization, github_client }
   let(:repo) { crear_repo! 'ejemplo' }
-  let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commits.first }
-
-  before do
-    commit_archivo_nuevo! '1.txt'
-  end
+  let!(:commit_base) { commit_archivo_nuevo! '1.txt' }
+  let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commit_base }
 
   describe '#commit!' do
     before do
@@ -35,9 +32,13 @@ describe Yanapiri::Bot do
         bot.preparar_correccion! entrega
       end
 
-      let(:branches) { repo.branches.map &:name }
-      it { expect(branches).to include('base') }
-      it { expect(branches).to include('entrega') }
+      it { expect(repo).to have_branch 'base' }
+      it { expect(repo).to have_remote_branch 'base' }
+      it { expect(repo.branches['base']).to have_last_commit commit_base }
+
+      it { expect(repo).to have_branch 'entrega' }
+      it { expect(repo).to have_remote_branch 'entrega' }
+      it { expect(repo.branches['entrega']).to have_last_commit commits.last }
     end
   end
 end
