@@ -63,15 +63,17 @@ module Yanapiri
       repo.commit mensaje, author: git_author
     end
 
-    private
-
     def aplanar_commits!(repo)
       repo.chdir do
         `git checkout --orphan new-master master`
         commit! repo, 'Enunciado preparado por Yanapiri'
         `git branch -M new-master master`
       end
+
+      repo.branches.reject {|b| b.name == 'master'}.each(&:delete)
     end
+
+    private
 
     def actualizar!(repo_path)
       Git.open(repo_path).pull

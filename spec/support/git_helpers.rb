@@ -40,6 +40,10 @@ module GitHelpers
     match {|repo| expect(repo.branches.remote.map &:name).to include expected}
   end
 
+  matcher :have_author do |expected|
+    match {|commit| expect("#{commit.author.name} <#{commit.author.email}>").to eq expected}
+  end
+
   matcher :eq_commit do |expected|
     match {|actual| expect(expected.sha).to eq actual.sha}
   end

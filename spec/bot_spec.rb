@@ -14,9 +14,7 @@ describe Yanapiri::Bot do
       bot.commit! repo, 'Un, dos, tres, probando'
     end
 
-    let(:git_author) { commits.last.author }
-    it { expect(git_author.name).to eq 'Yanapiri Bot' }
-    it { expect(git_author.email).to eq 'bot@yanapiri.org' }
+    it { expect(commits.last).to have_author 'Yanapiri Bot <bot@yanapiri.org>' }
   end
 
   describe '#preparar_correccion!' do
@@ -40,5 +38,22 @@ describe Yanapiri::Bot do
       it { expect(repo).to have_remote_branch 'entrega' }
       it { expect(repo.branches['entrega']).to have_last_commit commits.last }
     end
+  end
+
+  describe '#aplanar_commits!' do
+    before do
+      commit_archivo_nuevo! 'README.md'
+      commit_archivo_nuevo! 'template.wlk'
+      commit_archivo_nuevo! 'template.wtest'
+
+      repo.branch('prueba').checkout
+
+      bot.aplanar_commits! repo
+    end
+
+    it { expect(repo.log.size).to eq 1 }
+    it { expect(repo.branches.size).to eq 1 }
+    it { expect(repo).to have_branch 'master' }
+    it { expect(repo.log.first).to have_author bot.git_author }
   end
 end
