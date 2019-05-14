@@ -1,7 +1,7 @@
 module Yanapiri
   class Entrega
     attr_reader :id, :fecha_limite, :repo, :commit_base
-    delegate :mensaje_pull_request, to: :@modo
+    delegate :mensaje_pull_request, :commit_entrega, to: :@modo
 
     def initialize(repo_path, commit_base = nil, fecha_limite = nil, modo_estricto = false)
       @id = File.basename repo_path
@@ -24,11 +24,6 @@ module Yanapiri
       @repo.log.first.author_date
     end
 
-    def crear_branch!(nombre, head)
-      @repo.checkout head
-      @repo.branch(nombre).checkout
-    end
-
     def contiene_archivo?(nombre)
       @repo.chdir { File.exist? nombre }
     end
@@ -42,7 +37,20 @@ module Yanapiri
       @repo.log.between(@commit_base, 'master').any?
     end
 
+    def crear_branch_entrega!
+      crear_branch! 'entrega', commit_entrega
+    end
+
+    def crear_branch_base!
+      crear_branch! 'base', commit_base
+    end
+
     private
+
+    def crear_branch!(nombre, head)
+      @repo.checkout head
+      @repo.branch(nombre).checkout
+    end
 
     class ModoCorreccion
       delegate_missing_to :@entrega
@@ -71,6 +79,10 @@ module Yanapiri
         super + "\n\nNo se tuvieron en cuenta los siguientes commits:\n\n#{commits_desestimados}"
       end
 
+      def commit_entrega
+
+      end
+
       private
 
       def commits_desestimados
@@ -79,6 +91,9 @@ module Yanapiri
     end
 
     class ModoRelajado < ModoCorreccion
+      def commit_entrega
+        'master'
+      end
     end
   end
 end
