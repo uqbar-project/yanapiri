@@ -70,4 +70,26 @@ describe Yanapiri::Entrega do
       end
     end
   end
+
+  describe '#crear_branch_entrega!' do
+    before { entrega.crear_branch_entrega! }
+
+    it 'cuando está en término' do
+      expect(repo.branches['entrega']).to have_last_commit commits.last
+    end
+
+    context 'cuando está fuera de término' do
+      let(:fecha_limite) { Time.new(2018, 8, 30, 23, 59, 59) }
+      let(:fecha_entrega) { Time.new(2018, 8, 31, 1, 55, 40) }
+
+      it 'en modo relajado' do
+        expect(repo.branches['entrega']).to have_last_commit commits.last
+      end
+
+      context 'en modo estricto' do
+        let(:modo_estricto) { true }
+        it { expect(repo.branches['entrega']).to have_last_commit commits.first }
+      end
+    end
+  end
 end
