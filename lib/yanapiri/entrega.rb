@@ -47,7 +47,7 @@ module Yanapiri
     private
 
     def formato_humano(fecha)
-      fecha.strftime("%d/%m/%Y a las %H:%M")
+      I18n.l(fecha, format: :human)
     end
   end
 end

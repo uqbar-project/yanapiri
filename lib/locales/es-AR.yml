@@ -214,6 +214,7 @@ es-AR:
     am: am
     formats:
       default: "%a, %d de %b de %Y a las %H:%M:%S %Z"
+      human: "%d/%m/%Y a las %H:%M"
       long: "%A, %d de %B de %Y a las %I:%M %p"
       short: "%d de %b a las %H:%M hrs"
     pm: pm
