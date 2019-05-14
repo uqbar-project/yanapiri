@@ -6,7 +6,8 @@ describe Yanapiri::Entrega do
   let(:commit_base) { nil }
   let(:fecha_limite) { nil }
   let(:fecha_entrega) { Time.now }
-  let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commit_base, fecha_limite }
+  let(:modo_estricto) { false }
+  let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commit_base, fecha_limite, modo_estricto }
 
   before do
     commit_archivo_nuevo! '1.txt', {fecha: Time.new(2019, 03, 25)}
