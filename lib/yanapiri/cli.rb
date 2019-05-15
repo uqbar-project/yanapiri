@@ -41,8 +41,10 @@ module Yanapiri
     desc 'init', 'Inicializa una carpeta para contener entregas'
     def init
       config = OpenStruct.new
-      config.orga = ask 'Nombre de la organización:', default: File.basename(Dir.pwd)
-      success "De ahora en más, trabajaré con la organización #{config.orga} siempre que estés dentro de esta carpeta."
+      config.orga = ask 'Nombre de la organización:', default: options.orga || File.basename(Dir.pwd)
+      config.modo_estricto = yes? '¿Usar modo estricto? [y/N]'
+      config.renombrar_proyecto_wollok = !(no? '¿Renombrar proyectos Wollok al corregir? [Y/n]')
+      success "De ahora en más, trabajaré con la organización #{config.orga} siempre que estés dentro de esta carpeta. Al corregir, utilizaré el modo #{config.modo_estricto ? 'estricto' : 'relajado'} y #{config.renombrar_proyecto_wollok ? '' : 'no '}renombraré los proyectos Wollok."
       dump_local_config! config
     end
 
