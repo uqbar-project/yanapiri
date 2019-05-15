@@ -3,7 +3,7 @@
     "onlyMilestones": false,
     "groupBy": false,
     "template": {
-        "issue": "- [{{text}}]({{url}}) {{name}}"
+        "issue": "- {{name}}. ([{{text}}]({{url}}))"
     },
     "changelogFilename": "CHANGELOG.md"
 }

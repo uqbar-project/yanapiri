@@ -61,6 +61,14 @@ describe Yanapiri::Bot do
           it { expect(repo.show 'entrega', '.project').not_to include '<name>camion-transporte-warmichina</name>' }
         end
       end
+
+      context 'con proyecto Wollok ya corregido' do
+        def crear_archivos_entrega!
+          commit_archivo_nuevo! '.project', {source: 'wollokProjectCorregido'}
+        end
+
+        it { expect(repo.show 'entrega', '.project').to include '<name>camion-transporte-warmichina</name>' }
+      end
     end
   end
 

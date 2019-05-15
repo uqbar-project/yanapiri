@@ -26,8 +26,9 @@ module Yanapiri
       say '¡Kamisaraki! Yo soy Yanapiri, tu ayudante, y necesito algunos datos antes de empezar:', :bold
 
       config = OpenStruct.new
-      config.github_token = ask 'Token de GitHub (lo necesito para armar los pull requests):'
-      config.orga = ask 'Organización por defecto:'
+      config.github_token = ask 'Token de GitHub (lo necesito para armar los pull requests):', default: options.github_token
+      config.orga = ask 'Organización por defecto:', default: options.orga
+      leer_opciones_comunes! config
 
       begin
         bot = crear_bot config
@@ -42,7 +43,8 @@ module Yanapiri
     def init
       config = OpenStruct.new
       config.orga = ask 'Nombre de la organización:', default: File.basename(Dir.pwd)
-      success "De ahora en más, trabajaré con la organización #{config.orga} siempre que estés dentro de esta carpeta."
+      leer_opciones_comunes! config
+      success "De ahora en más, trabajaré con la organización #{config.orga} siempre que estés dentro de esta carpeta. Al corregir, utilizaré el modo #{config.modo_estricto ? 'estricto' : 'relajado'} y #{config.renombrar_proyecto_wollok ? '' : 'no '}renombraré los proyectos Wollok."
       dump_local_config! config
     end
 
@@ -82,6 +84,7 @@ module Yanapiri
     option :commit_base, {required: true, aliases: :b}
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
     option :renombrar_proyecto_wollok, {type: :boolean, default: true}
+    option :modo_estricto, {type: :boolean, default: false}
     def corregir(nombre)
       foreach_entrega(nombre) do |entrega|
         @bot.preparar_correccion! entrega, options.renombrar_proyecto_wollok ? [TransformacionWollok] : []
@@ -132,7 +135,7 @@ module Yanapiri
 
       def foreach_entrega(nombre)
         foreach_repo(nombre) do |repo, base_path|
-          yield Entrega.new "#{base_path}/#{repo}", options.commit_base, Time.parse(options.fecha_limite)
+          yield Entrega.new "#{base_path}/#{repo}", options.commit_base, Time.parse(options.fecha_limite), options.modo_estricto
         end
       end
 
@@ -168,6 +171,11 @@ module Yanapiri
 
       def load_config(source)
         if File.exist? source then YAML.load_file source else {} end
+      end
+
+      def leer_opciones_comunes!(config)
+        config.modo_estricto = yes? '¿Usar modo estricto? [y/N]'
+        config.renombrar_proyecto_wollok = !(no? '¿Renombrar proyectos Wollok al corregir? [Y/n]')
       end
 
       def options

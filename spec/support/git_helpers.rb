@@ -30,6 +30,7 @@ module GitHelpers
   end
 
   def commits
+    repo.checkout 'master'
     repo.log.to_a.reverse
   end
 
