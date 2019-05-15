@@ -61,6 +61,8 @@ module Yanapiri
     def commit!(repo, mensaje)
       repo.add
       repo.commit mensaje, author: git_author
+    rescue Git::GitExecuteError
+      # no se pudo commitear porque no había cambios
     end
 
     def aplanar_commits!(repo)
