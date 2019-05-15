@@ -82,6 +82,7 @@ module Yanapiri
     option :commit_base, {required: true, aliases: :b}
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
     option :renombrar_proyecto_wollok, {type: :boolean, default: true}
+    option :modo_estricto, {type: :boolean, default: false}
     def corregir(nombre)
       foreach_entrega(nombre) do |entrega|
         @bot.preparar_correccion! entrega, options.renombrar_proyecto_wollok ? [TransformacionWollok] : []
@@ -132,7 +133,7 @@ module Yanapiri
 
       def foreach_entrega(nombre)
         foreach_repo(nombre) do |repo, base_path|
-          yield Entrega.new "#{base_path}/#{repo}", options.commit_base, Time.parse(options.fecha_limite)
+          yield Entrega.new "#{base_path}/#{repo}", options.commit_base, Time.parse(options.fecha_limite), options.modo_estricto
         end
       end
 
