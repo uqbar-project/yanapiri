@@ -80,6 +80,7 @@ module Yanapiri
       end
 
       def commit_entrega
+        repo.checkout 'master'
         repo.log.until(fecha_limite.iso8601).first.sha
       end
 
