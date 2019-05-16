@@ -182,7 +182,8 @@ module Yanapiri
         original_options = super
         defaults_global = load_config global_config_file
         defaults_local = load_config local_config_file
-        Thor::CoreExt::HashWithIndifferentAccess.new defaults_global.merge(defaults_local).merge(original_options)
+
+        MultiSourceConfig.new defaults_global, defaults_local, original_options
       end
 
       def raise(message)
