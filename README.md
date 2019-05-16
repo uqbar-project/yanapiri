@@ -55,6 +55,20 @@ entregas
 
 Para escribir la configuración local, habría que ejecutar `yanapiri init` en cada uno de los subdirectorios.
 
+## Releases
+
+Utilizamos la gema [bump](https://github.com/gregorym/bump) para generar los releases, en conjunto con [gren](https://github.com/github-tools/github-release-notes) para actualizar la información en GitHub Releases. 
+
+Las versiones se nombran según la especificación [Semantic Versioning 2.0.0](https://semver.org/) y son publicadas automáticamente en [RubyGems](http://rubygems.org) gracias a [Travis](https://travis-ci.org).
+
+Para publicar una nueva versión (un _patch_, en este ejemplo), hay que ejecutar lo siguiente:
+
+```bash
+rake bump:patch             # o bien bump:minor o bump:major
+git push --follow-tags
+gren r
+``` 
+
 ## Agradecimientos
 
 Gracias a [Elizabeth Arostegui](http://www.coloripop.com/), autora de la cholita que usamos como logo de Yanapiri. Podés ver otros íconos de esa gran colección entrando a su sitio [Cosmocollita](http://cosmocollita.com/).
