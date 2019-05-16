@@ -141,7 +141,7 @@ module Yanapiri
       def foreach_entrega(nombre)
         foreach_repo(nombre) do |repo, base_path|
           entrega = Entrega.new "#{base_path}/#{repo}", options.commit_base, Time.parse(options.fecha_limite), options.modo_estricto
-          debug "Corrigiendo #{entrega}..."
+          debug "Trabajando con #{entrega}..."
           yield entrega
         end
       end
