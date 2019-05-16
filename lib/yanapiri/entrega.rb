@@ -45,6 +45,17 @@ module Yanapiri
       crear_branch! 'base', commit_base
     end
 
+    def to_s
+      string = "entrega de @#{autor}, "
+      string << if hay_cambios? then "modificada por última vez #{formato_humano fecha}" else "sin cambios" end
+      string << ' (fuera de término)' if fuera_de_termino?
+      string
+    end
+
+    def formato_humano(fecha)
+      I18n.l(fecha, format: :human)
+    end
+
     private
 
     def crear_branch!(nombre, head)
@@ -64,13 +75,7 @@ module Yanapiri
       end
 
       def mensaje_fuera_de_termino
-        "**Ojo:** tu último commit fue el #{formato_humano fecha}, pero la fecha límite era el #{formato_humano fecha_limite}.\n\n¡Tenés que respetar la fecha de entrega establecida! :point_up:"
-      end
-
-      private
-
-      def formato_humano(fecha)
-        I18n.l(fecha, format: :human)
+        "**Ojo:** tu último commit fue #{formato_humano fecha}, pero la fecha límite era #{formato_humano fecha_limite}.\n\n¡Tenés que respetar la fecha de entrega establecida! :point_up:"
       end
     end
 
