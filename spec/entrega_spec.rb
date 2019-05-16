@@ -92,4 +92,22 @@ describe Yanapiri::Entrega do
       end
     end
   end
+
+  describe '#to_s' do
+    let(:fecha_entrega) { Time.new(2018, 8, 31, 1, 55, 40) }
+
+    it 'cuando está en termino' do
+      expect(entrega.to_s).to eq "entrega de @faloi, modificada por última vez el 31/08/2018 a las 01:55"
+    end
+
+    context 'cuando no hay cambios' do
+      let(:commit_base) { commits.last.sha }
+      it { expect(entrega.to_s).to eq "entrega de @faloi, sin cambios" }
+    end
+
+    context 'cuando está fuera de término' do
+      let(:fecha_limite) { Time.new(2018, 8, 30, 23, 59, 59) }
+      it { expect(entrega.to_s).to eq "entrega de @faloi, modificada por última vez el 31/08/2018 a las 01:55 (fuera de término)" }
+    end
+  end
 end

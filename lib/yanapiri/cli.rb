@@ -44,7 +44,7 @@ module Yanapiri
       config = OpenStruct.new
       config.orga = ask 'Nombre de la organización:', default: File.basename(Dir.pwd)
       leer_opciones_comunes! config
-      success "De ahora en más, trabajaré con la organización #{config.orga} siempre que estés dentro de esta carpeta. Al corregir, utilizaré el modo #{config.modo_estricto ? 'estricto' : 'relajado'} y #{config.renombrar_proyecto_wollok ? '' : 'no '}renombraré los proyectos Wollok."
+      success "De ahora en más, trabajaré con la organización #{config.orga} siempre que estés dentro de esta carpeta. #{opciones_correccion config}"
       dump_local_config! config
     end
 
@@ -83,9 +83,10 @@ module Yanapiri
     desc 'corregir [ENTREGA]', 'Prepara la entrega para la corrección, creando los archivos y el pull request'
     option :commit_base, {required: true, aliases: :b}
     option :fecha_limite, {default: Time.now.to_s, aliases: :l}
-    option :renombrar_proyecto_wollok, {type: :boolean, default: true}
-    option :modo_estricto, {type: :boolean, default: false}
+    option :renombrar_proyecto_wollok, {type: :boolean}
+    option :modo_estricto, {type: :boolean}
     def corregir(nombre)
+      info "Comenzando corrección de #{nombre}. #{opciones_correccion}"
       foreach_entrega(nombre) do |entrega|
         @bot.preparar_correccion! entrega, options.renombrar_proyecto_wollok ? [TransformacionWollok] : []
       end
@@ -104,6 +105,10 @@ module Yanapiri
     end
 
     no_commands do
+      def opciones_correccion(config = options)
+        "Al corregir, utilizaré el modo #{config.modo_estricto ? 'estricto' : 'relajado'} y #{config.renombrar_proyecto_wollok ? '' : 'no '}renombraré los proyectos Wollok."
+      end
+
       def crear_bot(config)
         Bot.new config.orga, Octokit::Client.new(access_token: config.github_token)
       end
@@ -135,7 +140,9 @@ module Yanapiri
 
       def foreach_entrega(nombre)
         foreach_repo(nombre) do |repo, base_path|
-          yield Entrega.new "#{base_path}/#{repo}", options.commit_base, Time.parse(options.fecha_limite), options.modo_estricto
+          entrega = Entrega.new "#{base_path}/#{repo}", options.commit_base, Time.parse(options.fecha_limite), options.modo_estricto
+          debug "Corrigiendo #{entrega}..."
+          yield entrega
         end
       end
 
@@ -192,6 +199,14 @@ module Yanapiri
 
       def success(message)
         say "Yuspagara. #{message}", :green
+      end
+
+      def info(message)
+        say message, :yellow
+      end
+
+      def debug(message)
+        say message, :clear
       end
     end
   end
