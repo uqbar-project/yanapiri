@@ -12,3 +12,6 @@ deploy:
   on:
     tags: true
     repo: uqbar-project/yanapiri
+after_deploy:
+- npm install -g github-release-notes
+- gren r

@@ -66,7 +66,6 @@ Para publicar una nueva versión (un _patch_, en este ejemplo), hay que ejecutar
 ```bash
 rake bump:patch             # o bien bump:minor o bump:major
 git push --follow-tags
-gren r
 ```
 
 ## Agradecimientos
