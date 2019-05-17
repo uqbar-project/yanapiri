@@ -1,12 +1,12 @@
 [![Gem Version](https://badge.fury.io/rb/yanapiri.svg)](https://rubygems.org/gems/yanapiri)
-[![Build Status](https://travis-ci.org/faloi/yanapiri.svg?branch=master)](https://travis-ci.org/faloi/yanapiri)
+[![Build Status](https://travis-ci.org/uqbar-project/yanapiri.svg?branch=master)](https://travis-ci.org/uqbar-project/yanapiri)
 
 # Yanapiri
 
 ![logo](https://user-images.githubusercontent.com/1585835/57146278-53838f00-6d9b-11e9-9875-56dc509e4943.png)
 
 
-Yanapiri es un vocablo aymara que significa "ayudante" o "el que ayuda". 
+Yanapiri es un vocablo aymara que significa "ayudante" o "el que ayuda".
 
 A partir de este humilde aporte, es también una aplicación de línea de comandos (CLI) para asistir a docentes en ciertas tareas relacionadas al manejo de entregas a través de [GitHub Classroom](https://classroom.github.com/).
 
@@ -57,7 +57,7 @@ Para escribir la configuración local, habría que ejecutar `yanapiri init` en c
 
 ## Releases
 
-Utilizamos la gema [bump](https://github.com/gregorym/bump) para generar los releases, en conjunto con [gren](https://github.com/github-tools/github-release-notes) para actualizar la información en GitHub Releases. 
+Utilizamos la gema [bump](https://github.com/gregorym/bump) para generar los releases, en conjunto con [gren](https://github.com/github-tools/github-release-notes) para actualizar la información en GitHub Releases.
 
 Las versiones se nombran según la especificación [Semantic Versioning 2.0.0](https://semver.org/) y son publicadas automáticamente en [RubyGems](http://rubygems.org) gracias a [Travis](https://travis-ci.org).
 
@@ -67,7 +67,7 @@ Para publicar una nueva versión (un _patch_, en este ejemplo), hay que ejecutar
 rake bump:patch             # o bien bump:minor o bump:major
 git push --follow-tags
 gren r
-``` 
+```
 
 ## Agradecimientos
 

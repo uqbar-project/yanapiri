@@ -10,7 +10,7 @@ Gem::Specification.new do |spec|
   spec.email         = ["federico.aloi@gmail.com"]
 
   spec.summary       = "Ayudante para administrar entregas via GitHub Classroom."
-  spec.homepage      = "https://github.com/faloi/yanapiri"
+  spec.homepage      = "https://github.com/uqbar-project/yanapiri"
   spec.license       = "MIT"
 
   # Specify which files should be added to the gem when it is released.
