@@ -79,12 +79,14 @@ describe Yanapiri::Bot do
       commit_archivo_nuevo! 'template.wtest'
 
       repo.branch('prueba').checkout
+      repo.push 'origin', 'master', {mirror: true}
 
       bot.aplanar_commits! repo
     end
 
     it { expect(repo.log.size).to eq 1 }
-    it { expect(repo.branches.size).to eq 1 }
+    it { expect(repo.branches.remote.map &:name).to eq ['master', 'prueba'] }
+    it { expect(repo.branches.local.map &:name).to eq ['master'] }
     it { expect(repo).to have_branch 'master' }
     it { expect(repo.log.first).to have_author bot.git_author }
   end
