@@ -72,7 +72,7 @@ module Yanapiri
         `git branch -M new-master master`
       end
 
-      repo.branches.reject {|b| b.name == 'master'}.each(&:delete)
+      repo.branches.local.reject {|b| b.name == 'master'}.each(&:delete)
     end
 
     private
