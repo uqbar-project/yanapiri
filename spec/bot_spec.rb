@@ -62,6 +62,21 @@ describe Yanapiri::Bot do
         end
       end
 
+      context 'con corrección ya preparada' do
+        def crear_archivos_entrega!
+          commit_archivo_nuevo! '.project', {source: 'wollokProject'}
+        end
+
+        before do
+          repo.checkout 'master'
+          commit_archivo_nuevo! 'solution.txt'
+          bot.preparar_correccion! entrega, transformaciones
+        end
+
+        it { expect(repo.branches['entrega']).to have_last_commit_message "Merge branch 'master' into entrega" }
+        it { expect(repo.branches['entrega']).to include_commit_with_message 'Creado solution.txt'}
+      end
+
       context 'con proyecto Wollok ya corregido' do
         def crear_archivos_entrega!
           commit_archivo_nuevo! '.project', {source: 'wollokProjectCorregido'}

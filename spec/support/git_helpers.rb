@@ -42,6 +42,13 @@ module GitHelpers
     match {|branch| expect(branch.gcommit.message).to eq expected}
   end
 
+  matcher :include_commit_with_message do |expected|
+    match do |branch|
+      branch.checkout
+      expect(branch.instance_variable_get(:@base).log.any? { |it| it.message == expected }).to be_truthy
+    end
+  end
+
   matcher :have_branch do |expected|
     match {|repo| expect(repo.branches.map &:name).to include expected}
   end

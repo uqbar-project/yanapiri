@@ -45,6 +45,15 @@ module Yanapiri
       crear_branch! 'base', commit_base
     end
 
+    def actualizar!
+      repo.checkout 'entrega'
+      repo.merge commit_entrega, nil
+    end
+
+    def ya_preparada?
+      repo.is_local_branch? 'entrega'
+    end
+
     def to_s
       string = "entrega de @#{autor}, "
       string << if hay_cambios? then "modificada por última vez #{formato_humano fecha}" else "sin cambios" end
