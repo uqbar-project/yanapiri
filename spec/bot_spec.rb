@@ -28,7 +28,7 @@ describe Yanapiri::Bot do
 
       before do
         crear_archivos_entrega!
-        expect(github_client).to receive(:create_pull_request)
+        expect(github_client).to receive(:create_pull_request).once
         bot.preparar_correccion! entrega, transformaciones
       end
 
