@@ -16,7 +16,7 @@ module Yanapiri
     end
 
     def autor
-      @id.split('-').last
+      @id.split('-').first
     end
 
     def fecha
