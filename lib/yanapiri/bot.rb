@@ -28,11 +28,16 @@ module Yanapiri
       if not entrega.hay_cambios?
         crear_issue_advertencia! entrega
       else
-        entrega.crear_branch_base!
-        entrega.crear_branch_entrega!
-        transformaciones.select {|t| t.aplica? entrega}.each {|t| t.transformar! entrega, self}
-        publicar_cambios! entrega
-        crear_pull_request! entrega
+        if entrega.ya_preparada?
+          entrega.actualizar!
+          publicar_cambios! entrega
+        else
+          entrega.crear_branch_base!
+          entrega.crear_branch_entrega!
+          transformaciones.select {|t| t.aplica? entrega}.each {|t| t.transformar! entrega, self}
+          publicar_cambios! entrega
+          crear_pull_request! entrega
+        end
       end
     end
 
