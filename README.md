@@ -36,6 +36,14 @@ yanapiri clonar entrega-1
 yanapiri corregir entrega-1 --commit-base 326336a8ba771611 --fecha-limite "2019-05-01 23:59:59"
 ```
 
+Otra opción posible, para cuando el commit base no es el mismo para todas las entregas, es especificarlo mediante un índice (con base 1). Por ejemplo, esto tomará como base al tercer commit que tenga el repositorio:
+
+```
+yanapiri corregir entrega-1 --commit-base index:3 --fecha-limite "2019-05-01 23:59:59"
+```
+
+
+
 ### Trabajando con más de una organización
 
 Yanapiri soporta tres formas de configurar la organización:
