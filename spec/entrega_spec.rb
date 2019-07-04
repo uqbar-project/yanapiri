@@ -28,6 +28,23 @@ describe Yanapiri::Entrega do
       let(:commit_base) { commits.last.sha }
       it { expect(entrega.hay_cambios?).to be_falsy }
     end
+
+    context 'con base elegido por índice' do
+      context 'con cambios' do
+        let(:commit_base) { 'index:1' }
+        it { expect(entrega.hay_cambios?).to be_truthy }
+      end
+
+      context 'sin cambios' do
+        let(:commit_base) { 'index:2' }
+        it { expect(entrega.hay_cambios?).to be_falsy }
+      end
+
+      context 'fuera de rango' do
+        let(:commit_base) { 'index:3' }
+        it { expect { entrega.hay_cambios? }.to raise_error('No se encontró commit con índice 3') }
+      end
+    end
   end
 
   describe '#autor' do

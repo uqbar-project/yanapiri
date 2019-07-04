@@ -6,9 +6,9 @@ module Yanapiri
     def initialize(repo_path, commit_base = nil, fecha_limite = nil, modo_estricto = false)
       @id = File.basename repo_path
       @fecha_limite = fecha_limite || Time.now + 1.second
-      @commit_base = commit_base || '--max-parents=0 HEAD'
       @modo = (modo_estricto ? ModoEstricto : ModoRelajado).new self
       @repo = Git.open repo_path
+      @commit_base = parse_commit_base commit_base
     end
 
     def fuera_de_termino?
@@ -71,6 +71,20 @@ module Yanapiri
       @repo.checkout head
       @repo.branch(nombre).checkout
     end
+
+    def parse_commit_base(commit_base)
+      if not commit_base
+        '--max-parents=0 HEAD'
+      elsif commit_base.start_with? 'index'
+        requested = commit_base.split(':').last.to_i
+        index = @repo.log.size - requested
+        raise "No se encontró commit con índice #{requested}" if index < 0
+        @repo.log[index].sha
+      else
+        commit_base
+      end
+    end
+
 
     class ModoCorreccion
       delegate_missing_to :@entrega

@@ -6,7 +6,7 @@ describe Yanapiri::Bot do
   let(:bot) { Yanapiri::Bot.new organization, github_client }
   let(:repo) { crear_repo! 'camion-transporte-warmichina' }
   let!(:commit_base) { commit_archivo_nuevo! '1.txt' }
-  let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commit_base }
+  let(:entrega) { Yanapiri::Entrega.new repo.dir.to_s, commit_base.sha }
 
   describe '#commit!' do
     before do
