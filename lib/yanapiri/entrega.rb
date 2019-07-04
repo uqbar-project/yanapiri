@@ -77,8 +77,7 @@ module Yanapiri
         '--max-parents=0 HEAD'
       elsif commit_base.start_with? 'index'
         requested = commit_base.split(':').last.to_i
-        index = @repo.log.size - requested
-        raise "No se encontró commit con índice #{requested}" if index < 0
+        index = [@repo.log.size - requested, 0].max
         @repo.log[index].sha
       else
         commit_base
