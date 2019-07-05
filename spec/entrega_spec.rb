@@ -26,7 +26,24 @@ describe Yanapiri::Entrega do
 
     context 'con base igual a último commit' do
       let(:commit_base) { commits.last.sha }
-      it { expect(entrega.hay_cambios?).to be_falsy }
+      it { expect(entrega.hay_cambios?).to be_falsey }
+    end
+
+    context 'con base elegido por índice' do
+      context 'con cambios' do
+        let(:commit_base) { 'index:1' }
+        it { expect(entrega.hay_cambios?).to be_truthy }
+      end
+
+      context 'sin cambios' do
+        let(:commit_base) { 'index:2' }
+        it { expect(entrega.hay_cambios?).to be_falsey }
+      end
+
+      context 'fuera de rango' do
+        let(:commit_base) { 'index:3' }
+        it { expect(entrega.hay_cambios?).to be_falsey }
+      end
     end
   end
 
