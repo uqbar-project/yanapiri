@@ -63,6 +63,12 @@ entregas
 
 Para escribir la configuración local, habría que ejecutar `yanapiri init` en cada uno de los subdirectorios.
 
+## Pruebas locales
+
+Para una prueba rápida, se puede instalar la gema localmente ejecutando `rake install`. Esto hará que el comando `yanapiri` ejecute el código local.
+
+Durante el desarrollo es más cómodo no tener que correr `rake install` ante cada cambio, y para eso el proyecto incluye `guard`, una herramienta que se encarga de correrlo ante cada cambio. Basta con ejecutar `bundle exec guard` para que funcione (¡no olvides dejar abierta la terminal!). 
+
 ## Releases
 
 Utilizamos la gema [bump](https://github.com/gregorym/bump) para generar los releases, en conjunto con [gren](https://github.com/github-tools/github-release-notes) para actualizar la información en GitHub Releases.
